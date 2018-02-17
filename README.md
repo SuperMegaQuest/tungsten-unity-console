@@ -11,6 +11,9 @@
 
 HUD Console is a polished, extendable console that can easily be added to your existing Unity projects.
 
+## Branches
+Master branch is used for development. If you're looking to use the console in your project I suggest grabbing it from the release branch.
+
 ## Adding HUD Console to your project.
 To add the console to your project simply drag Console/Console into your scene.
 The console can be opened by pressing Grave '`' (The key above tab).
