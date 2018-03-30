@@ -10,6 +10,8 @@ namespace HUDConsole {
 			get { return m_instance.m_consoleHistory; }
 		}
 
+		public static string helpTextFormat = "{0} : {1}";
+
 		public static void AddCommand(string commandName, CommandHandler handler, string helpText) {
 			m_commands.Add(commandName.ToLowerInvariant(), new ConsoleCommand(commandName, handler, helpText));
 		}
@@ -48,7 +50,7 @@ namespace HUDConsole {
 
 		public static void PrintHelpText() {
 			foreach (var command in m_commands.Values.OrderBy(c => c.commandName)) {
-				Log(string.Format("{0} : {1}", command.commandName, command.helpText));
+				Log(string.Format(helpTextFormat, command.commandName, command.helpText));
 			}
 		}
 #endregion Public
@@ -88,7 +90,7 @@ namespace HUDConsole {
 			m_consoleView.transform.SetParent(transform, false);
 
 			if (!enableDefaultCommands) { return; }
-			
+
 			// Add core commands.
 			AddCommand("Echo", ConsoleCoreCommands.Echo, "Display message to console.");
 			AddCommand("Console.Log", ConsoleCoreCommands.ConsoleLog, "Display message to console.");
