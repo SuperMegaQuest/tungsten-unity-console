@@ -50,6 +50,10 @@ namespace HUDConsole {
 			m_instance.m_consoleView.ClearConsoleView();
 		}
 
+		public static void SetHelpTextFormat(string helpTextFormat) {
+			m_helpTextFormat = helpTextFormat;
+		}
+
 		public static void PrintHelpText() {
 			foreach (var command in m_commands.Values.OrderBy(c => c.commandName)) {
 				Log(string.Format(m_helpTextFormat, command.commandName, command.helpText), LogType.Log, false);
@@ -60,7 +64,7 @@ namespace HUDConsole {
 #region Private
 		private static Console m_instance = null;
 
-		private const string m_helpTextFormat = "{0} : {1}";
+		private static string m_helpTextFormat = "{0} : {1}";
 
 		[Header("History")]
 		[SerializeField] private ConsoleHistory m_consoleHistory;
