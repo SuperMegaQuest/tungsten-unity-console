@@ -7,6 +7,7 @@ namespace HUDConsole {
 		public void Open(ConsoleLog consoleLog) {
 			m_stackTraceText.text = consoleLog.logString + "\n\n" + consoleLog.stackTraceString;
 			SetEnabled(true);
+			m_scrollbar.value = 1;
 		}
 #endregion Public
 
