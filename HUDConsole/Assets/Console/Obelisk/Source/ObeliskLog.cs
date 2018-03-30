@@ -82,6 +82,8 @@ namespace HUDConsole {
 		}
 
 		private void ButtonHandler(Button target) {
+			if (consoleLog.stackTraceString == "") { return; }
+
 			ObeliskConsole.OpenStackTraceForLog(consoleLog);
 		}
 #endregion Private

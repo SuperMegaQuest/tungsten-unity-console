@@ -22,12 +22,12 @@ namespace HUDConsole {
 			ParseCommand(command);
 		}
 
-		public static void Log(string logString, LogType logType = LogType.Log) {
-			CreateLog(logString, logType, true, false, Color.white, Color.black);
+		public static void Log(string logString, LogType logType = LogType.Log, bool doStackTrace = true) {
+			CreateLog(logString, logType, doStackTrace, false, Color.white, Color.black);
 		}
 
-		public static void Log(string logString, Color textColor, Color bgColor) {
-			CreateLog(logString, LogType.Log, true, true, textColor, bgColor);
+		public static void Log(string logString, Color textColor, Color bgColor, bool doStackTrace = true) {
+			CreateLog(logString, LogType.Log, doStackTrace, true, textColor, bgColor);
 		}
 
 		public static void LogWarning(string logString) {
@@ -52,7 +52,7 @@ namespace HUDConsole {
 
 		public static void PrintHelpText() {
 			foreach (var command in m_commands.Values.OrderBy(c => c.commandName)) {
-				Log(string.Format(helpTextFormat, command.commandName, command.helpText));
+				Log(string.Format(helpTextFormat, command.commandName, command.helpText), LogType.Log, false);
 			}
 		}
 #endregion Public
