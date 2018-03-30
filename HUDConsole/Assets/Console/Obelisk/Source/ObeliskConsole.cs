@@ -6,12 +6,12 @@ using UnityEngine.UI;
 namespace HUDConsole {
 	public class ObeliskConsole : ConsoleViewAbstract {
 #region Public
-		public override bool isActive { get; protected set; }
+		public override bool IsActive { get; protected set; }
 
 		public override void ClearConsoleView() {
 			base.ClearConsoleView();
 
-			for(int i = 0; i < m_logViewHistory.Count; i++) {
+			for(var i = 0; i < m_logViewHistory.Count; i++) {
 				PoolLog(m_logViewHistory[i]);
 			}
 			m_logViewHistory.Clear();
@@ -23,7 +23,7 @@ namespace HUDConsole {
 			m_obeliskStackTrace.Open(consoleLog);
 		}
 
-		public static ObeliskColorSet colorSet {
+		public static ObeliskColorSet ColorSet {
 			get; private set;
 		}
 #endregion Public
@@ -96,11 +96,11 @@ namespace HUDConsole {
 				m_instance = this;
 			}
 			else {
-				Debug.LogError("Two instances of ObeliskConsole detected.");
+				Debug.LogError("[Console] Two instances of ObeliskConsole detected.");
 				Destroy(gameObject);
 			}
 
-			colorSet = Instantiate(m_colorSet);
+			ColorSet = Instantiate(m_colorSet);
 
 			GetComponents();
 			LogAwake();
@@ -180,7 +180,7 @@ namespace HUDConsole {
 		}
 
 		private void ToggleState() {
-			SetEnabled(!m_container.gameObject.activeSelf);
+			SetEnabled(m_container.gameObject.activeSelf == false);
 		}
 
 		private void SetEnabled(bool enable) {
@@ -193,7 +193,7 @@ namespace HUDConsole {
 				m_commandInputField.ActivateInputField();
 			}
 
-			isActive = enable;
+			IsActive = enable;
 		}
 
 		private void CloseButtonHandler(Button target) {
@@ -212,7 +212,7 @@ namespace HUDConsole {
 			ObeliskLog obeliskLog = m_obeliskLogPool.Dequeue();
 			obeliskLog.transform.SetParent(m_logLayout, false);
 			
-			ConsoleLog consoleLog = Console.consoleHistory.LogGetLatest();
+			ConsoleLog consoleLog = Console.ConsoleHistory.LogGetLatest();
 			obeliskLog.SetLog(ref consoleLog);
 
 			AddLogViewHistory(obeliskLog);
@@ -232,7 +232,7 @@ namespace HUDConsole {
 		}
 
 		private void FillPool() {
-			for(int i = 0; i < m_logViewHistoryMax + 1; i++) {
+			for(var i = 0; i < m_logViewHistoryMax + 1; i++) {
 				ObeliskLog log = Instantiate(m_obeliskLogPrefab);
 				log.transform.SetParent(m_obeliskLogPoolContainer, false);
 
@@ -253,7 +253,7 @@ namespace HUDConsole {
 
 			// Resize LogLayout so it can properly contain all the logs.
 			for(var i = 0; i < m_logViewHistory.Count; i++) {
-				newHeight += m_logViewHistory[i].rectTransform.sizeDelta.y;
+				newHeight += m_logViewHistory[i].RectTransform.sizeDelta.y;
 			}
 			m_logLayout.sizeDelta = new Vector2(m_logLayout.sizeDelta.x, Mathf.Clamp(newHeight, minHeight, 4096.0f));
 
@@ -268,7 +268,7 @@ namespace HUDConsole {
 	#region Filter
 		private void FilterUpdated() {
 			for(var i = 0; i < m_logViewHistory.Count; i++) {
-				switch(m_logViewHistory[i].consoleLog.logType) {
+				switch(m_logViewHistory[i].ConsoleLog.logType) {
 					case LogType.Error: {
 						m_logViewHistory[i].gameObject.SetActive(!m_filterDropdown.GetFilterSetting(LogType.Error));
 						break;
@@ -324,7 +324,7 @@ namespace HUDConsole {
 
 			for(var i = 0; i < m_logViewHistory.Count; i++) {
 				string searchStringLower = searchString.ToLowerInvariant();
-				string logStringLower = m_logViewHistory[i].consoleLog.logString.ToLowerInvariant();
+				string logStringLower = m_logViewHistory[i].ConsoleLog.logString.ToLowerInvariant();
 
 				m_logViewHistory[i].gameObject.SetActive(logStringLower.Contains(searchStringLower));
 			}
@@ -365,7 +365,7 @@ namespace HUDConsole {
 		}
 
 		private void CommandSetPrevious(int direction) {
-			int commandHistoryCount = Console.consoleHistory.CommandHistoryCount();
+			int commandHistoryCount = Console.ConsoleHistory.CommandHistoryCount();
 			int index = 0;
 
 			if(commandHistoryCount > 0) {
@@ -383,7 +383,7 @@ namespace HUDConsole {
 					m_commandInputField.text = "";
 				}
 				else {
-					m_commandInputField.text = Console.consoleHistory.CommandHistoryGet(index);
+					m_commandInputField.text = Console.ConsoleHistory.CommandHistoryGet(index);
 					m_commandInputField.caretPosition = m_commandInputField.text.Length;
 				}
 			}
@@ -393,41 +393,41 @@ namespace HUDConsole {
 	#region ColorSet
 		private void ApplyColorSet() {
 			// Main.
-			m_containerBackgroundImage.color = colorSet.backgroundColor;
-			m_outline.effectColor = colorSet.outlineColor;
-			m_resizeHandleImage.color = colorSet.buttonColor;
+			m_containerBackgroundImage.color = ColorSet.backgroundColor;
+			m_outline.effectColor = ColorSet.outlineColor;
+			m_resizeHandleImage.color = ColorSet.buttonColor;
 
 			// Titlebar.
-			m_titlebarBackgroundImage.color = colorSet.titlebarBackgroundColor;
-			m_titlebarIconImage.color = colorSet.iconColor;
-			m_titlebarTitleText.color = colorSet.titlebarTextColor;
-			m_closeButtonBackgroundImage.color = colorSet.buttonColor;
-			m_closeButtonIconImage.color = colorSet.iconColor;
+			m_titlebarBackgroundImage.color = ColorSet.titlebarBackgroundColor;
+			m_titlebarIconImage.color = ColorSet.iconColor;
+			m_titlebarTitleText.color = ColorSet.titlebarTextColor;
+			m_closeButtonBackgroundImage.color = ColorSet.buttonColor;
+			m_closeButtonIconImage.color = ColorSet.iconColor;
 
 			// Scrollbar.
-			m_scrollbarBackgroundImage.color = colorSet.scrollbarBackgroundColor;
+			m_scrollbarBackgroundImage.color = ColorSet.scrollbarBackgroundColor;
 
-			ColorBlock scrollbarColorBlock = new ColorBlock();
-			scrollbarColorBlock.normalColor = colorSet.scrollbarSliderColor;
-			scrollbarColorBlock.highlightedColor = colorSet.scrollbarSliderHighlightedColor;
-			scrollbarColorBlock.pressedColor = colorSet.scrollbarSliderPressedColor;
+			var scrollbarColorBlock = new ColorBlock();
+			scrollbarColorBlock.normalColor = ColorSet.scrollbarSliderColor;
+			scrollbarColorBlock.highlightedColor = ColorSet.scrollbarSliderHighlightedColor;
+			scrollbarColorBlock.pressedColor = ColorSet.scrollbarSliderPressedColor;
 			scrollbarColorBlock.colorMultiplier = 1.0f;
 			m_scrollbar.colors = scrollbarColorBlock;
 
 			// Input
-			m_inputContainerBackgroundImage.color = colorSet.inputContainerBackgroundColor;
+			m_inputContainerBackgroundImage.color = ColorSet.inputContainerBackgroundColor;
 
 			// Command.
-			m_commandSymbolBackgroundImage.color = colorSet.iconBackgroundColor;
-			m_commandSymbolImage.color = colorSet.iconColor;
-			m_commandInputFieldImage.color = colorSet.buttonColor;
-			m_commandInputFieldText.color = colorSet.inputTextColor;
+			m_commandSymbolBackgroundImage.color = ColorSet.iconBackgroundColor;
+			m_commandSymbolImage.color = ColorSet.iconColor;
+			m_commandInputFieldImage.color = ColorSet.buttonColor;
+			m_commandInputFieldText.color = ColorSet.inputTextColor;
 
 			// Search.
-			m_searchSymbolBackgroundImage.color = colorSet.iconBackgroundColor;
-			m_searchSymbolImage.color = colorSet.iconColor;
-			m_searchInputFieldImage.color = colorSet.buttonColor;
-			m_searchInputFieldText.color = colorSet.inputTextColor;
+			m_searchSymbolBackgroundImage.color = ColorSet.iconBackgroundColor;
+			m_searchSymbolImage.color = ColorSet.iconColor;
+			m_searchInputFieldImage.color = ColorSet.buttonColor;
+			m_searchInputFieldText.color = ColorSet.inputTextColor;
 		}
 	#endregion ColorSet
 #endregion Private

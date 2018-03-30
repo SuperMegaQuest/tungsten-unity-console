@@ -7,10 +7,8 @@ namespace HUDConsole {
 	public class ConsoleHistory : ScriptableObject {
 #region Public
 	#region Command
-		public int commandHistoryMax = 32;
-
 		public void CommandHistoryAdd(string commandString) {
-			if(m_commandHistory.Count >= commandHistoryMax) {
+			if(m_commandHistory.Count >= m_commandHistoryMax) {
 				m_commandHistory.RemoveAt(0);
 			}
 
@@ -48,6 +46,7 @@ namespace HUDConsole {
 
 #region Private
 	#region Command
+		[SerializeField] private int m_commandHistoryMax = 32;
 		private List<string> m_commandHistory = new List<string>();
 	#endregion Command
 

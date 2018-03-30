@@ -11,3 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ec1d9ff2c64444ab5e8aadd6959282, type: 3}
   m_Name: ConsoleHistory
   m_EditorClassIdentifier: 
+  m_commandHistoryMax: 32

@@ -126,28 +126,28 @@ namespace HUDConsole {
 		}
 
 		private void ApplyColorSet() {
-			m_dropdownSymbolBackgroundImage.color = ObeliskConsole.colorSet.iconBackgroundColor;
-			m_dropdownSymbolImage.color = ObeliskConsole.colorSet.iconColor;
-			m_dropdownButtonImage.color = ObeliskConsole.colorSet.buttonColor;
-			m_dropdownArrowImage.color = ObeliskConsole.colorSet.iconColor;
+			m_dropdownSymbolBackgroundImage.color = ObeliskConsole.ColorSet.iconBackgroundColor;
+			m_dropdownSymbolImage.color = ObeliskConsole.ColorSet.iconColor;
+			m_dropdownButtonImage.color = ObeliskConsole.ColorSet.buttonColor;
+			m_dropdownArrowImage.color = ObeliskConsole.ColorSet.iconColor;
 
-			m_errorToggleIconBackgroundImage.color = ObeliskConsole.colorSet.iconBackgroundColor;
-			m_assertToggleIconBackgroundImage.color = ObeliskConsole.colorSet.iconBackgroundColor;
-			m_warningToggleIconBackgroundImage.color = ObeliskConsole.colorSet.iconBackgroundColor;
-			m_logToggleIconIconBackgroundImage.color = ObeliskConsole.colorSet.iconBackgroundColor;
-			m_exceptionToggleIconBackgroundImage.color = ObeliskConsole.colorSet.iconBackgroundColor;
+			m_errorToggleIconBackgroundImage.color = ObeliskConsole.ColorSet.iconBackgroundColor;
+			m_assertToggleIconBackgroundImage.color = ObeliskConsole.ColorSet.iconBackgroundColor;
+			m_warningToggleIconBackgroundImage.color = ObeliskConsole.ColorSet.iconBackgroundColor;
+			m_logToggleIconIconBackgroundImage.color = ObeliskConsole.ColorSet.iconBackgroundColor;
+			m_exceptionToggleIconBackgroundImage.color = ObeliskConsole.ColorSet.iconBackgroundColor;
 
-			m_errorToggleButtonImage.color = ObeliskConsole.colorSet.buttonColor;
-			m_assertToggleButtonImage.color = ObeliskConsole.colorSet.buttonColor;
-			m_warningToggleButtonImage.color = ObeliskConsole.colorSet.buttonColor;
-			m_logToggleButtonImage.color = ObeliskConsole.colorSet.buttonColor;
-			m_exceptionToggleButtonImage.color = ObeliskConsole.colorSet.buttonColor;
+			m_errorToggleButtonImage.color = ObeliskConsole.ColorSet.buttonColor;
+			m_assertToggleButtonImage.color = ObeliskConsole.ColorSet.buttonColor;
+			m_warningToggleButtonImage.color = ObeliskConsole.ColorSet.buttonColor;
+			m_logToggleButtonImage.color = ObeliskConsole.ColorSet.buttonColor;
+			m_exceptionToggleButtonImage.color = ObeliskConsole.ColorSet.buttonColor;
 
-			m_errorToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
-			m_assertToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
-			m_warningToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
-			m_logToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
-			m_exceptionToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
+			m_errorToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
+			m_assertToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
+			m_warningToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
+			m_logToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
+			m_exceptionToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
 		}
 
 		private void DropdownButtonHandler(Button target) {
@@ -175,10 +175,10 @@ namespace HUDConsole {
 			}
 
 			if(target.isOn) {
-				m_errorToggleIconImage.color = ObeliskConsole.colorSet.iconDisabledColor;
+				m_errorToggleIconImage.color = ObeliskConsole.ColorSet.iconDisabledColor;
 			}
 			else {
-				m_errorToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
+				m_errorToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
 			}
 		}
 
@@ -190,10 +190,10 @@ namespace HUDConsole {
 			}
 
 			if(target.isOn) {
-				m_assertToggleIconImage.color = ObeliskConsole.colorSet.iconDisabledColor;
+				m_assertToggleIconImage.color = ObeliskConsole.ColorSet.iconDisabledColor;
 			}
 			else {
-				m_assertToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
+				m_assertToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
 			}
 		}
 
@@ -205,10 +205,10 @@ namespace HUDConsole {
 			}
 
 			if(target.isOn) {
-				m_warningToggleIconImage.color = ObeliskConsole.colorSet.iconDisabledColor;
+				m_warningToggleIconImage.color = ObeliskConsole.ColorSet.iconDisabledColor;
 			}
 			else {
-				m_warningToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
+				m_warningToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
 			}
 		}
 
@@ -220,10 +220,10 @@ namespace HUDConsole {
 			}
 
 			if(target.isOn) {
-				m_logToggleIconImage.color = ObeliskConsole.colorSet.iconDisabledColor;
+				m_logToggleIconImage.color = ObeliskConsole.ColorSet.iconDisabledColor;
 			}
 			else {
-				m_logToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
+				m_logToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
 			}
 		}
 
@@ -235,10 +235,10 @@ namespace HUDConsole {
 			}
 
 			if(target.isOn) {
-				m_exceptionToggleIconImage.color = ObeliskConsole.colorSet.iconDisabledColor;
+				m_exceptionToggleIconImage.color = ObeliskConsole.ColorSet.iconDisabledColor;
 			}
 			else {
-				m_exceptionToggleIconImage.color = ObeliskConsole.colorSet.iconColor;
+				m_exceptionToggleIconImage.color = ObeliskConsole.ColorSet.iconColor;
 			}
 		}
 #endregion Private

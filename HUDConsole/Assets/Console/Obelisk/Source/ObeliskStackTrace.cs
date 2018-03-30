@@ -5,7 +5,7 @@ namespace HUDConsole {
 	public class ObeliskStackTrace : MonoBehaviour {
 #region Public
 		public void Open(ConsoleLog consoleLog) {
-			m_stackTraceText.text = consoleLog.logString + "\n\n" + consoleLog.stackTraceString;
+			m_stackTraceText.text = consoleLog.logString + "\n\n" + consoleLog.stackTrace;
 			SetEnabled(true);
 			m_scrollRect.normalizedPosition = new Vector2(0, 1);
 		}
@@ -80,30 +80,30 @@ namespace HUDConsole {
 	#region ColorSet
 		private void ApplyColorSet() {
 			// Main.
-			m_containerBackgroundImage.color = ObeliskConsole.colorSet.backgroundColor;
-			m_outline.effectColor = ObeliskConsole.colorSet.outlineColor;
-			m_resizeHandleBackgroundImage.color = ObeliskConsole.colorSet.inputContainerBackgroundColor;
-			m_resizeHandleImage.color = ObeliskConsole.colorSet.buttonColor;
+			m_containerBackgroundImage.color = ObeliskConsole.ColorSet.backgroundColor;
+			m_outline.effectColor = ObeliskConsole.ColorSet.outlineColor;
+			m_resizeHandleBackgroundImage.color = ObeliskConsole.ColorSet.inputContainerBackgroundColor;
+			m_resizeHandleImage.color = ObeliskConsole.ColorSet.buttonColor;
 
 			// Titlebar.
-			m_titlebarBackgroundImage.color = ObeliskConsole.colorSet.titlebarBackgroundColor;
-			m_titlebarIconImage.color = ObeliskConsole.colorSet.iconColor;
-			m_titlebarTitleText.color = ObeliskConsole.colorSet.titlebarTextColor;
-			m_closeButtonBackgroundImage.color = ObeliskConsole.colorSet.buttonColor;
-			m_closeButtonIconImage.color = ObeliskConsole.colorSet.iconColor;
+			m_titlebarBackgroundImage.color = ObeliskConsole.ColorSet.titlebarBackgroundColor;
+			m_titlebarIconImage.color = ObeliskConsole.ColorSet.iconColor;
+			m_titlebarTitleText.color = ObeliskConsole.ColorSet.titlebarTextColor;
+			m_closeButtonBackgroundImage.color = ObeliskConsole.ColorSet.buttonColor;
+			m_closeButtonIconImage.color = ObeliskConsole.ColorSet.iconColor;
 
 			// Scrollbar.
-			m_scrollbarBackgroundImage.color = ObeliskConsole.colorSet.scrollbarBackgroundColor;
+			m_scrollbarBackgroundImage.color = ObeliskConsole.ColorSet.scrollbarBackgroundColor;
 
-			ColorBlock scrollbarColorBlock = new ColorBlock();
-			scrollbarColorBlock.normalColor = ObeliskConsole.colorSet.scrollbarSliderColor;
-			scrollbarColorBlock.highlightedColor = ObeliskConsole.colorSet.scrollbarSliderHighlightedColor;
-			scrollbarColorBlock.pressedColor = ObeliskConsole.colorSet.scrollbarSliderPressedColor;
+			var scrollbarColorBlock = new ColorBlock();
+			scrollbarColorBlock.normalColor = ObeliskConsole.ColorSet.scrollbarSliderColor;
+			scrollbarColorBlock.highlightedColor = ObeliskConsole.ColorSet.scrollbarSliderHighlightedColor;
+			scrollbarColorBlock.pressedColor = ObeliskConsole.ColorSet.scrollbarSliderPressedColor;
 			scrollbarColorBlock.colorMultiplier = 1.0f;
 			m_scrollbar.colors = scrollbarColorBlock;
 
 			// Content.
-			m_stackTraceText.color = ObeliskConsole.colorSet.stackTraceTextColor;
+			m_stackTraceText.color = ObeliskConsole.ColorSet.stackTraceTextColor;
 		}
 	#endregion ColorSet
 #endregion Private

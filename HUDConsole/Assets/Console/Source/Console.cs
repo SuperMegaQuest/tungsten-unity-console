@@ -6,13 +6,13 @@ using UnityEngine;
 namespace HUDConsole {
 	public class Console : MonoBehaviour {
 #region Public
-		public static bool isActive { get { return m_instance != null && m_instance.m_consoleView.isActive; } }
-
-		public static ConsoleHistory consoleHistory {
-			get { return m_instance.m_consoleHistory; }
+		public static bool IsActive {
+			get { return m_instance != null && m_instance.m_consoleView.IsActive; }
 		}
 
-		public static string helpTextFormat = "{0} : {1}";
+		public static ConsoleHistory ConsoleHistory {
+			get { return m_instance.m_consoleHistory; }
+		}
 
 		public static void AddCommand(string commandName, CommandHandler handler, string helpText) {
 			m_commands.Add(commandName.ToLowerInvariant(), new ConsoleCommand(commandName, handler, helpText));
@@ -52,7 +52,7 @@ namespace HUDConsole {
 
 		public static void PrintHelpText() {
 			foreach (var command in m_commands.Values.OrderBy(c => c.commandName)) {
-				Log(string.Format(helpTextFormat, command.commandName, command.helpText), LogType.Log, false);
+				Log(string.Format(m_helpTextFormat, command.commandName, command.helpText), LogType.Log, false);
 			}
 		}
 #endregion Public
@@ -60,22 +60,24 @@ namespace HUDConsole {
 #region Private
 		private static Console m_instance = null;
 
+		private const string m_helpTextFormat = "{0} : {1}";
+
 		[Header("History")]
 		[SerializeField] private ConsoleHistory m_consoleHistory;
 
 		[Header("Default Commands")]
-		[SerializeField] private bool enableDefaultCommands = true;
+		[SerializeField] private bool m_enableDefaultCommands = true;
 
 		[Header("Unity Log Settings")]
-		[SerializeField] private bool logUnityErrors = true;
-		[SerializeField] private bool logUnityAsserts = true;
-		[SerializeField] private bool logUnityWarnings = true;
-		[SerializeField] private bool logUnityLogs = true;
-		[SerializeField] private bool logUnityExceptions = true;
+		[SerializeField] private bool m_logUnityErrors = true;
+		[SerializeField] private bool m_logUnityAsserts = true;
+		[SerializeField] private bool m_logUnityWarnings = true;
+		[SerializeField] private bool m_logUnityLogs = true;
+		[SerializeField] private bool m_logUnityExceptions = true;
 
 		[Header("Console View")]
 		[Tooltip("Select which console view implementation to use.")]
-		[SerializeField] private ConsoleViewAbstract consoleViewPrefab;
+		[SerializeField] private ConsoleViewAbstract m_consoleViewPrefab;
 		private ConsoleViewAbstract m_consoleView;
 
 		private void Awake() {
@@ -88,10 +90,10 @@ namespace HUDConsole {
 			}
 
 			// Instantiate view.
-			m_consoleView = Instantiate(consoleViewPrefab);
+			m_consoleView = Instantiate(m_consoleViewPrefab);
 			m_consoleView.transform.SetParent(transform, false);
 
-			if (!enableDefaultCommands) { return; }
+			if (m_enableDefaultCommands == false) { return; }
 
 			// Add core commands.
 			AddCommand("Echo", ConsoleCoreCommands.Echo, "Display message to console.");
@@ -115,7 +117,7 @@ namespace HUDConsole {
 		private static Dictionary<string, ConsoleCommand> m_commands = new Dictionary<string, ConsoleCommand>();
 
 		private static void ParseCommand(string commandString) {
-			consoleHistory.CommandHistoryAdd(commandString);
+			ConsoleHistory.CommandHistoryAdd(commandString);
 
 			commandString = commandString.Trim();
 
@@ -129,7 +131,7 @@ namespace HUDConsole {
 			}
 
 			ConsoleLog newLog = new ConsoleLog("> " + commandString, "", LogType.Log, false, Color.white, Color.black);
-			consoleHistory.LogAdd(newLog);
+			ConsoleHistory.LogAdd(newLog);
 
 			try {
 				m_commands[cmdName].handler(cmdArgs);
@@ -145,18 +147,18 @@ namespace HUDConsole {
 
 	#region Logs
 		private static void CreateLog(string logString, LogType logType, bool doStackTrace, bool customColor, Color textColor, Color bgColor) {
-			string stackTrace = "";
+			var stackTrace = "";
 			if(doStackTrace) {
 				stackTrace = new System.Diagnostics.StackTrace().ToString();
 			}
 
 			ConsoleLog newLog = new ConsoleLog(logString, stackTrace, logType, customColor, textColor, bgColor);
-			consoleHistory.LogAdd(newLog);
+			ConsoleHistory.LogAdd(newLog);
 		}
 
 		private static void CreateLog(string logString, string stackTrace, LogType logType) {
 			var newLog = new ConsoleLog(logString, stackTrace, logType, false, Color.white, Color.black);
-			consoleHistory.LogAdd(newLog);
+			ConsoleHistory.LogAdd(newLog);
 		}
 	#endregion Logs
 
@@ -168,31 +170,31 @@ namespace HUDConsole {
 		private void HandleUnityLog(string logString, string stackTrace, LogType logType) {
 			switch(logType) {
 				case LogType.Error: {
-					if(logUnityErrors) {
+					if(m_logUnityErrors) {
 						CreateLog(logString, stackTrace, logType);
 					}
 					break;
 				}
 				case LogType.Assert: {
-					if(logUnityAsserts) {
+					if(m_logUnityAsserts) {
 						CreateLog(logString, stackTrace, logType);
 					}
 					break;
 				}
 				case LogType.Warning: {
-					if(logUnityWarnings) {
+					if(m_logUnityWarnings) {
 						CreateLog(logString, stackTrace, logType);
 					}
 					break;
 				}
 				case LogType.Log: {
-					if(logUnityLogs) {
+					if(m_logUnityLogs) {
 						CreateLog(logString, stackTrace, logType);
 					}
 					break;
 				}
 				case LogType.Exception: {
-					if(logUnityExceptions) {
+					if(m_logUnityExceptions) {
 						CreateLog(logString, stackTrace, logType);
 					}
 					break;
