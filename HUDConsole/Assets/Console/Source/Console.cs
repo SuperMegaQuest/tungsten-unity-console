@@ -6,9 +6,13 @@ using UnityEngine;
 namespace HUDConsole {
 	public class Console : MonoBehaviour {
 #region Public
+		public static bool isActive { get { return m_instance != null && m_instance.m_consoleView.isActive; } }
+
 		public static ConsoleHistory consoleHistory {
 			get { return m_instance.m_consoleHistory; }
 		}
+
+		public static string helpTextFormat = "{0} : {1}";
 
 		public static void AddCommand(string commandName, CommandHandler handler, string helpText) {
 			m_commands.Add(commandName.ToLowerInvariant(), new ConsoleCommand(commandName, handler, helpText));
@@ -18,12 +22,12 @@ namespace HUDConsole {
 			ParseCommand(command);
 		}
 
-		public static void Log(string logString, LogType logType = LogType.Log) {
-			CreateLog(logString, logType, true, false, Color.white, Color.black);
+		public static void Log(string logString, LogType logType = LogType.Log, bool doStackTrace = true) {
+			CreateLog(logString, logType, doStackTrace, false, Color.white, Color.black);
 		}
 
-		public static void Log(string logString, Color textColor, Color bgColor) {
-			CreateLog(logString, LogType.Log, true, true, textColor, bgColor);
+		public static void Log(string logString, Color textColor, Color bgColor, bool doStackTrace = true) {
+			CreateLog(logString, LogType.Log, doStackTrace, true, textColor, bgColor);
 		}
 
 		public static void LogWarning(string logString) {
@@ -47,11 +51,8 @@ namespace HUDConsole {
 		}
 
 		public static void PrintHelpText() {
-			for(int i = 0; i < m_commands.Count; i++) {
-				string commandName = m_commands.ElementAt(i).Value.commandName;
-				string helpText = m_commands.ElementAt(i).Value.helpText;
-
-				Console.Log(commandName + " : " + helpText);
+			foreach (var command in m_commands.Values.OrderBy(c => c.commandName)) {
+				Log(string.Format(helpTextFormat, command.commandName, command.helpText), LogType.Log, false);
 			}
 		}
 #endregion Public
@@ -61,6 +62,9 @@ namespace HUDConsole {
 
 		[Header("History")]
 		[SerializeField] private ConsoleHistory m_consoleHistory;
+
+		[Header("Default Commands")]
+		[SerializeField] private bool enableDefaultCommands = true;
 
 		[Header("Unity Log Settings")]
 		[SerializeField] private bool logUnityErrors = true;
@@ -86,6 +90,8 @@ namespace HUDConsole {
 			// Instantiate view.
 			m_consoleView = Instantiate(consoleViewPrefab);
 			m_consoleView.transform.SetParent(transform, false);
+
+			if (!enableDefaultCommands) { return; }
 
 			// Add core commands.
 			AddCommand("Echo", ConsoleCoreCommands.Echo, "Display message to console.");

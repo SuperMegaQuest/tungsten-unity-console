@@ -6,6 +6,8 @@ using UnityEngine.UI;
 namespace HUDConsole {
 	public class ObeliskConsole : ConsoleViewAbstract {
 #region Public
+		public override bool isActive { get; protected set; }
+
 		public override void ClearConsoleView() {
 			base.ClearConsoleView();
 
@@ -49,6 +51,7 @@ namespace HUDConsole {
 		private ObeliskFilterDropdown m_filterDropdown;
 
 		// Log.
+		private ScrollRect m_scrollRect;
 		private RectTransform m_logLayout;
 		private Scrollbar m_scrollbar;
 		private Image m_scrollbarBackgroundImage;
@@ -143,6 +146,7 @@ namespace HUDConsole {
 			m_filterDropdown.SubscribeToFilterChanges(FilterUpdated);
 
 			// Log.
+			m_scrollRect = transform.Find("Container/Log").GetComponent<ScrollRect>();
 			m_logLayout = transform.Find("Container/Log/LogLayout").GetComponent<RectTransform>();
 			m_scrollbar = transform.Find("Container/Log/Scrollbar").GetComponent<Scrollbar>();
 			m_scrollbarBackgroundImage = transform.Find("Container/Log/Scrollbar").GetComponent<Image>();
@@ -182,9 +186,14 @@ namespace HUDConsole {
 		private void SetEnabled(bool enable) {
 			m_container.gameObject.SetActive(enable);
 
+			m_scrollRect.normalizedPosition = Vector2.zero;
+			m_commandInputField.text = "";
+
 			if(enable) {
 				m_commandInputField.ActivateInputField();
 			}
+
+			isActive = enable;
 		}
 
 		private void CloseButtonHandler(Button target) {
@@ -218,6 +227,8 @@ namespace HUDConsole {
 			m_logViewHistory.Add(obeliskLog);
 
 			ResizeLogLayout();
+
+			m_scrollRect.normalizedPosition = Vector2.zero;
 		}
 
 		private void FillPool() {

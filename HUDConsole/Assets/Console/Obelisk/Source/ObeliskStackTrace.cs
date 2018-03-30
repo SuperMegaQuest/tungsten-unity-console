@@ -7,6 +7,7 @@ namespace HUDConsole {
 		public void Open(ConsoleLog consoleLog) {
 			m_stackTraceText.text = consoleLog.logString + "\n\n" + consoleLog.stackTraceString;
 			SetEnabled(true);
+			m_scrollRect.normalizedPosition = new Vector2(0, 1);
 		}
 #endregion Public
 
@@ -27,6 +28,7 @@ namespace HUDConsole {
 		private Image m_closeButtonIconImage;
 
 		// Scrollbar.
+		private ScrollRect m_scrollRect;
 		private Scrollbar m_scrollbar;
 		private Image m_scrollbarBackgroundImage;
 
@@ -57,6 +59,7 @@ namespace HUDConsole {
 			m_closeButtonIconImage = transform.Find("Container/Titlebar/Close/Image").GetComponent<Image>();
 
 			// Scrollbar.
+			m_scrollRect = transform.Find("Container/Log").GetComponent<ScrollRect>();
 			m_scrollbar = transform.Find("Container/Log/Scrollbar").GetComponent<Scrollbar>();
 			m_scrollbarBackgroundImage = transform.Find("Container/Log/Scrollbar").GetComponent<Image>();
 
