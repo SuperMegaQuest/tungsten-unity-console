@@ -186,7 +186,7 @@ namespace HUDConsole {
 		private void SetEnabled(bool enable) {
 			m_container.gameObject.SetActive(enable);
 
-			m_scrollRect.normalizedPosition = new Vector2(0, 0);
+			m_scrollRect.normalizedPosition = Vector2.zero;
 			m_commandInputField.text = "";
 
 			if(enable) {
@@ -228,7 +228,7 @@ namespace HUDConsole {
 
 			ResizeLogLayout();
 
-			m_scrollRect.normalizedPosition = new Vector2(0, 0);
+			m_scrollRect.normalizedPosition = Vector2.zero;
 		}
 
 		private void FillPool() {
