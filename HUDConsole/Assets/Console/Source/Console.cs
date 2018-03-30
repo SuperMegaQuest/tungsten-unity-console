@@ -6,6 +6,8 @@ using UnityEngine;
 namespace HUDConsole {
 	public class Console : MonoBehaviour {
 #region Public
+		public static bool isActive { get { return m_instance != null && m_instance.m_consoleView.isActive; } }
+
 		public static ConsoleHistory consoleHistory {
 			get { return m_instance.m_consoleHistory; }
 		}
@@ -97,7 +99,7 @@ namespace HUDConsole {
 			AddCommand("Console.LogWarning", ConsoleCoreCommands.ConsoleLogWarning, "Display warning message to console.");
 			AddCommand("Console.LogError", ConsoleCoreCommands.ConsoleLogError, "Display error message to console.");
 			AddCommand("Console.Clear", ConsoleCoreCommands.ConsoleClear, "Clear console.");
-			AddCommand("Help", ConsoleCoreCommands.Help, "List of commands and their help text.");
+			AddCommand("Help", ConsoleCoreCommands.Help, "List of commands and their help text");
 
 			AddCommand("Debug.Log", ConsoleCoreCommands.DebugLog, "Logs message to the Unity Console.");
 			AddCommand("Debug.LogWarning", ConsoleCoreCommands.DebugLogWarning, "A variant of Debug.Log that logs a warning message to the console.");

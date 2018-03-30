@@ -6,6 +6,8 @@ using UnityEngine.UI;
 namespace HUDConsole {
 	public class ObeliskConsole : ConsoleViewAbstract {
 #region Public
+		public override bool isActive { get; protected set; }
+
 		public override void ClearConsoleView() {
 			base.ClearConsoleView();
 
@@ -185,6 +187,8 @@ namespace HUDConsole {
 			if(enable) {
 				m_commandInputField.ActivateInputField();
 			}
+
+			isActive = enable;
 		}
 
 		private void CloseButtonHandler(Button target) {
