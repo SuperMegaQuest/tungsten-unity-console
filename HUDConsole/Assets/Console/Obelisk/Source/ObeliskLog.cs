@@ -74,11 +74,15 @@ namespace HUDConsole {
 
 			m_background.color = newBackgroundColor;
 			m_text.color = ObeliskConsole.colorSet.LogTextColor(logType);
+
+			m_button.transition = Selectable.Transition.None;
 		}
 
 		private void SetColors(Color textColor, Color backgroundColor) {
 			m_background.color = backgroundColor;
 			m_text.color = textColor;
+
+			m_button.transition = Selectable.Transition.None;
 		}
 
 		private void ButtonHandler(Button target) {
