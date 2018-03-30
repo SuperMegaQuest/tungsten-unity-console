@@ -47,11 +47,8 @@ namespace HUDConsole {
 		}
 
 		public static void PrintHelpText() {
-			for(int i = 0; i < m_commands.Count; i++) {
-				string commandName = m_commands.ElementAt(i).Value.commandName;
-				string helpText = m_commands.ElementAt(i).Value.helpText;
-
-				Console.Log(commandName + " : " + helpText);
+			foreach (var command in m_commands.Values.OrderBy(c => c.commandName)) {
+				Log(string.Format("{0} : {1}", command.commandName, command.helpText));
 			}
 		}
 #endregion Public
