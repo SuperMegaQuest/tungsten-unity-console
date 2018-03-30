@@ -9,6 +9,10 @@ HUDConsole/Assets/AssetStoreTools*
 HUDConsole/.vs/
 HUDConsole/.vscode/
 
+# Rider
+HUDConsole/.idea
+HUDConsole/Assets/Plugins/Editor/JetBrains*
+
 # ShaderForge
 HUDConsole/Assets/ShaderForge/
 HUDConsole/Assets/ShaderForge.meta

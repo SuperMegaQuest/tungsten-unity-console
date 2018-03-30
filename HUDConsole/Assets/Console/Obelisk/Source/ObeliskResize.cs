@@ -28,8 +28,8 @@ namespace HUDConsole {
 
 			// Offset position to maintain relative position.
 			// This is needed because size is applied in both directions.
-			Vector2 newPos = new Vector2();
-			Vector3 difference = m_container.sizeDelta - m_resizeSizeBegin;
+			var newPos = new Vector2();
+			var difference = m_container.sizeDelta - m_resizeSizeBegin;
 			newPos.x = m_resizePosBegin.x + (difference.x * 0.5f);
 			newPos.y = m_resizePosBegin.y - (difference.y * 0.5f);
 			m_container.localPosition = newPos;

@@ -6,16 +6,16 @@ using UnityEngine.UI;
 namespace HUDConsole {
 	public class ObeliskLog : MonoBehaviour {
 #region Public
-		public ConsoleLog consoleLog {
+		public ConsoleLog ConsoleLog {
 			get; private set;
 		}
 
-		public RectTransform rectTransform {
+		public RectTransform RectTransform {
 			get; private set;
 		}
 
 		public void SetLog(ref ConsoleLog log) {
-			consoleLog = log;
+			ConsoleLog = log;
 
 			if(log.customColor) {
 				SetColors(log.textColor, log.bgColor);
@@ -26,7 +26,7 @@ namespace HUDConsole {
 
 			m_text.text = log.logString;
 
-			if(string.IsNullOrEmpty(consoleLog.stackTraceString) == false) {
+			if(string.IsNullOrEmpty(ConsoleLog.stackTrace) == false) {
 				m_stackTraceGameObject.SetActive(true);
 			}
 		}
@@ -49,11 +49,11 @@ namespace HUDConsole {
 			float heightMultiple = Mathf.Ceil(m_text.preferredHeight / ObeliskLog.m_heightIncrement);
 			float newHeight = heightMultiple * m_heightIncrement;
 
-			rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newHeight);
+			RectTransform.sizeDelta = new Vector2(RectTransform.sizeDelta.x, newHeight);
 		}
 
 		private void GetComponents() {
-			rectTransform = GetComponent<RectTransform>();
+			RectTransform = GetComponent<RectTransform>();
 
 			m_background = transform.Find("Button").GetComponent<Image>();
 			m_text = transform.Find("Text").GetComponent<Text>();
@@ -62,18 +62,18 @@ namespace HUDConsole {
 			m_button.onClick.AddListener(delegate { ButtonHandler(m_button); });
 			m_stackTraceGameObject = transform.Find("Image_StackTrace").gameObject;
 			m_stackTraceImage = m_stackTraceGameObject.GetComponent<Image>();
-			m_stackTraceImage.color = ObeliskConsole.colorSet.iconColor;
+			m_stackTraceImage.color = ObeliskConsole.ColorSet.iconColor;
 		}
 
 		private void SetColors(LogType logType) {
-			var newBackgroundColor = ObeliskConsole.colorSet.LogBackgroundColor(logType);
+			var newBackgroundColor = ObeliskConsole.ColorSet.LogBackgroundColor(logType);
 
 			if(transform.parent.childCount % 2 == 0) {
 				newBackgroundColor += new Color(0.015f, 0.015f, 0.015f, 1.0f);
 			}
 
 			m_background.color = newBackgroundColor;
-			m_text.color = ObeliskConsole.colorSet.LogTextColor(logType);
+			m_text.color = ObeliskConsole.ColorSet.LogTextColor(logType);
 
 			m_button.transition = Selectable.Transition.None;
 		}
@@ -86,9 +86,9 @@ namespace HUDConsole {
 		}
 
 		private void ButtonHandler(Button target) {
-			if (consoleLog.stackTraceString == "") { return; }
+			if (ConsoleLog.stackTrace == "") { return; }
 
-			ObeliskConsole.OpenStackTraceForLog(consoleLog);
+			ObeliskConsole.OpenStackTraceForLog(ConsoleLog);
 		}
 #endregion Private
 	}

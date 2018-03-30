@@ -3,7 +3,7 @@ using UnityEngine;
 namespace HUDConsole {
 	public abstract class ConsoleViewAbstract : MonoBehaviour {
 #region Public
-		public abstract bool isActive { get; protected set; }
+		public abstract bool IsActive { get; protected set; }
 
 		public virtual void ClearConsoleView() {
 
@@ -12,11 +12,11 @@ namespace HUDConsole {
 
 #region Private
 		protected virtual void Awake() {
-			Console.consoleHistory.LogAddListener(OnConsoleLogHistoryChanged);
+			Console.ConsoleHistory.LogAddListener(OnConsoleLogHistoryChanged);
 		}
 
 		protected virtual void OnDestroy() {
-			Console.consoleHistory.LogRemoveListener(OnConsoleLogHistoryChanged);
+			Console.ConsoleHistory.LogRemoveListener(OnConsoleLogHistoryChanged);
 		}
 
 		protected virtual void OnConsoleLogHistoryChanged() {
