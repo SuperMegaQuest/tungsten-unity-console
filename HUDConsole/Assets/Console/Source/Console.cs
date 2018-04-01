@@ -70,11 +70,37 @@ namespace HUDConsole {
 			return (stripRichText ? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty) : stringBuilder.ToString()).Trim();
 		}
 
-		/// <summary>Save console history to a log file in <see cref="Application.persistentDataPath"/> and return the file's path.</summary>
-		public static string SaveHistoryToLogFile(string prefix = "console", bool stripRichText = false) {
-			string path = string.Format("{0}/{1}_{2:yyyy-MM-dd_HH-mm-ss}.log", Application.persistentDataPath, prefix, DateTime.Now);
+		/// <summary>Save console history to a log file and return the file's path.</summary>
+		public static string SaveHistoryToLogFile(string path = "", string prefix = "console", bool stripRichText = false) {
+			path = path.Trim();
+
+			if (path == string.Empty) {
+				path = Application.persistentDataPath;
+			} else if (path.EndsWith(":")) {
+				path += "\\";
+			} else if (path.EndsWith("/")) {
+				path = path.Replace("/", "\\");
+			}
+
+			if (m_isDrivePath.IsMatch(path)) {
+				if (Directory.GetLogicalDrives().All(drive => !drive.Equals(path, StringComparison.CurrentCultureIgnoreCase))) {
+					LogError(string.Format("Drive not found: {0}", path));
+
+					throw new Exception("Drive not found");
+				}
+
+				path = string.Format("{0}:", path[0]);
+			} else if (!Directory.Exists(Path.GetDirectoryName(path))) {
+				LogError(string.Format("Directory not found: {0}", path));
+
+				throw new Exception("Directory not found");
+			}
+
+			path = string.Format("{0}/{1}_{2:yyyy-MM-dd_HH-mm-ss}.log", path, prefix, DateTime.Now);
+
 			File.WriteAllText(path, GetHistoryString(stripRichText));
-			return path;
+
+			return path.Replace("\\", "/");
 		}
 
 		/// <summary>Copy console history to the clipboard (<see cref="GUIUtility.systemCopyBuffer"/>).</summary>
@@ -101,6 +127,11 @@ namespace HUDConsole {
 		private static Console m_instance = null;
 
 		private static string m_helpTextFormat = "{0} : {1}";
+
+		/// <summary>Tests whether a string is a drive root. e.g. "D:\"</summary>
+		const string m_regexDrivePath = @"^\w:(?:\\|\/)?$";
+		/// <summary>Tests whether a string is a drive root. e.g. "D:\"</summary>
+		static readonly Regex m_isDrivePath = new Regex(m_regexDrivePath);
 
 		[Header("History")]
 		[SerializeField] private ConsoleHistory m_consoleHistory;
@@ -197,7 +228,7 @@ namespace HUDConsole {
 
 				if (m_isWrappedInQuotes.IsMatch(value)) { value = value.Substring(1, value.Length - 2); }
 
-				args.Add(Regex.Unescape(value));
+				args.Add(value);
 			}
 
 			return args;

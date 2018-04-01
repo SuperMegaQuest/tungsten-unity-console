@@ -40,7 +40,7 @@ namespace HUDConsole {
 		}
 
 		public static void ConsoleSave(string[] args) {
-			Console.Log(string.Format("Saved to {0}", Console.SaveHistoryToLogFile()));
+			Console.Log(string.Format("Saved to {0}", Console.SaveHistoryToLogFile((args == null || args.Length == 0) ? "" : args[0])));
 		}
 
 		public static void ConsoleCopy(string[] args) {
