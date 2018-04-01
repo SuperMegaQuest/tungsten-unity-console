@@ -34,6 +34,10 @@ namespace HUDConsole {
 			return m_logHistory[m_logHistory.Count - 1];
 		}
 
+		public List<ConsoleLog> LogGetAll() {
+			return m_logHistory;
+		}
+
 		public void LogAddListener(Action callback) {
 			logHistoryChanged += callback;
 		}

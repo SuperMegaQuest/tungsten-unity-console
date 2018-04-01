@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,6 +47,35 @@ namespace HUDConsole {
 
 		public static void LogException(string logString) {
 			CreateLog(logString, LogType.Exception, true, false, Color.white, Color.black);
+		}
+
+		public static List<ConsoleLog> GetHistoryConsoleLogs() {
+			return ConsoleHistory.LogGetAll();
+		}
+
+		public static string GetHistoryString(bool stripRichText = false) {
+			List<ConsoleLog> history = GetHistoryConsoleLogs();
+			StringBuilder stringBuilder = new StringBuilder();
+
+			foreach (ConsoleLog log in history) {
+				stringBuilder.AppendLine(log.logString.Trim());
+				if(log.stackTrace != "") { stringBuilder.AppendLine(log.stackTrace.Trim()); }
+				stringBuilder.Append(Environment.NewLine);
+			}
+
+			return (stripRichText ? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty) : stringBuilder.ToString()).Trim();
+		}
+
+		/// <summary>Save console history to a log file in <see cref="Application.persistentDataPath"/> and return the file's path.</summary>
+		public static string SaveHistoryToLogFile(string prefix = "console", bool stripRichText = false) {
+			string path = string.Format("{0}/{1}_{2:yyyy-MM-dd_HH-mm-ss}.log", Application.persistentDataPath, prefix, DateTime.Now);
+			File.WriteAllText(path, GetHistoryString(stripRichText));
+			return path;
+		}
+
+		/// <summary>Copy console history to the clipboard (<see cref="GUIUtility.systemCopyBuffer"/>).</summary>
+		public static void CopyHistoryToClipboard(bool stripRichText = false) {
+			GUIUtility.systemCopyBuffer = GetHistoryString(stripRichText);
 		}
 
 		public static void ClearConsoleView() {
@@ -104,6 +136,8 @@ namespace HUDConsole {
 			AddCommand("Console.Log", ConsoleCoreCommands.ConsoleLog, "Display message to console.");
 			AddCommand("Console.LogWarning", ConsoleCoreCommands.ConsoleLogWarning, "Display warning message to console.");
 			AddCommand("Console.LogError", ConsoleCoreCommands.ConsoleLogError, "Display error message to console.");
+			AddCommand("Console.Save", ConsoleCoreCommands.ConsoleSave, "Save console to log file.");
+			AddCommand("Console.Copy", ConsoleCoreCommands.ConsoleCopy, "Copy console to clipboard.");
 			AddCommand("Console.Clear", ConsoleCoreCommands.ConsoleClear, "Clear console.");
 			AddCommand("Help", ConsoleCoreCommands.Help, "List of commands and their help text");
 
