@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -352,6 +355,10 @@ namespace HUDConsole {
 				if(Input.GetKeyDown(KeyCode.DownArrow)) {
 					CommandSetPrevious(-1);
 				}
+
+				if (Input.GetKeyDown(KeyCode.Tab)) {
+					CommandAutoComplete();
+				}
 			}
 		}
 
@@ -388,7 +395,36 @@ namespace HUDConsole {
 				}
 			}
 		}
-	#endregion Command
+
+		private void CommandAutoComplete() {
+			string input = m_commandInputField.text.Trim();
+
+			if (input == "") { return; }
+
+			List<ConsoleCommand> commands = Console.GetOrderedCommands().Where(command => command.commandName.StartsWith(input, StringComparison.CurrentCultureIgnoreCase)).ToList();
+
+			switch (commands.Count) {
+				case 0: return;
+				case 1:
+					m_commandInputField.text = commands[0].commandName;
+					m_commandInputField.MoveTextEnd(false);
+					return;
+				default:
+					LogAvailableAutoCompleteCommands(commands);
+					break;
+			}
+		}
+
+		private static void LogAvailableAutoCompleteCommands(List<ConsoleCommand> commands) {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			foreach (ConsoleCommand command in commands) {
+				stringBuilder.Append(command.commandName + "\t\t");
+			}
+
+			Console.Log(stringBuilder.ToString(), LogType.Log, false);
+		}
+ 	#endregion Command
 
 	#region ColorSet
 		private void ApplyColorSet() {

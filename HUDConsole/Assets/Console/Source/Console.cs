@@ -49,6 +49,10 @@ namespace HUDConsole {
 			CreateLog(logString, LogType.Exception, true, false, Color.white, Color.black);
 		}
 
+		public static List<ConsoleCommand> GetOrderedCommands() {
+			return m_commands.Values.OrderBy(c => c.commandName).ToList();
+		}
+
 		public static List<ConsoleLog> GetHistoryConsoleLogs() {
 			return ConsoleHistory.LogGetAll();
 		}
