@@ -158,25 +158,28 @@ namespace HUDConsole {
 	#region Commands
 		private static Dictionary<string, ConsoleCommand> m_commands = new Dictionary<string, ConsoleCommand>();
 
+		/// <summary>Splits a string by spaces, unless surrounded by (unescaped) single or double quotes.</summary>
+		const string m_regexStringSplit = @"(""[^""\\]*(?:\\.[^""\\]*)*""|'[^'\\]*(?:\\.[^'\\]*)*'|[\S]+)+";
+		/// <summary>Tests whether a string starts and ends with either double or single quotes (not a mix).</summary>
+		const string m_regexQuoteWrapped = @"^"".*""$|^'.*'$";
+		/// <summary>Tests whether a string starts and ends with either double or single quotes (not a mix).</summary>
+		static readonly Regex m_isWrappedInQuotes = new Regex(m_regexQuoteWrapped);
+
 		private static void ParseCommand(string commandString) {
 			ConsoleHistory.CommandHistoryAdd(commandString);
 
 			commandString = commandString.Trim();
 
-			string[] cmdSplit = commandString.Split(' ');
+			List<string> cmdSplit = ParseArguments(commandString);
 
-			string cmdName = cmdSplit[0];
-			cmdName = cmdName.ToLower();
-			string[] cmdArgs = new string[cmdSplit.Length - 1];
-			for(int i = 1; i < cmdSplit.Length; i++) {
-				cmdArgs[i - 1] = cmdSplit[i];
-			}
+			string cmdName = cmdSplit[0].ToLower();
+			cmdSplit.RemoveAt(0);
 
 			ConsoleLog newLog = new ConsoleLog("> " + commandString, "", LogType.Log, false, Color.white, Color.black);
 			ConsoleHistory.LogAdd(newLog);
 
 			try {
-				m_commands[cmdName].handler(cmdArgs);
+				m_commands[cmdName].handler(cmdSplit.ToArray());
 			}
 			catch(KeyNotFoundException) {
 				LogError(String.Format("Command \"{0}\" not found.", cmdName));
@@ -184,6 +187,20 @@ namespace HUDConsole {
 			catch(Exception) {
 
 			}
+		}
+
+		static List<string> ParseArguments(string commandString) {
+			List<string> args = new List<string>();
+
+			foreach (Match match in Regex.Matches(commandString, m_regexStringSplit)) {
+				string value = match.Value.Trim();
+
+				if (m_isWrappedInQuotes.IsMatch(value)) { value = value.Substring(1, value.Length - 2); }
+
+				args.Add(Regex.Unescape(value));
+			}
+
+			return args;
 		}
 	#endregion Commands
 
