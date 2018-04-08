@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,8 +49,71 @@ namespace HUDConsole {
 			CreateLog(logString, LogType.Exception, true, false, Color.white, Color.black);
 		}
 
+		public static List<ConsoleCommand> GetOrderedCommands() {
+			return m_commands.Values.OrderBy(c => c.commandName).ToList();
+		}
+
+		public static List<ConsoleLog> GetHistoryConsoleLogs() {
+			return ConsoleHistory.LogGetAll();
+		}
+
+		public static string GetHistoryString(bool stripRichText = false) {
+			List<ConsoleLog> history = GetHistoryConsoleLogs();
+			StringBuilder stringBuilder = new StringBuilder();
+
+			foreach (ConsoleLog log in history) {
+				stringBuilder.AppendLine(log.logString.Trim());
+				if(log.stackTrace != "") { stringBuilder.AppendLine(log.stackTrace.Trim()); }
+				stringBuilder.Append(Environment.NewLine);
+			}
+
+			return (stripRichText ? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty) : stringBuilder.ToString()).Trim();
+		}
+
+		/// <summary>Save console history to a log file and return the file's path.</summary>
+		public static string SaveHistoryToLogFile(string path = "", string prefix = "console", bool stripRichText = false) {
+			path = path.Trim();
+
+			if (path == string.Empty) {
+				path = Application.persistentDataPath;
+			} else if (path.EndsWith(":")) {
+				path += "\\";
+			} else if (path.EndsWith("/")) {
+				path = path.Replace("/", "\\");
+			}
+
+			if (m_isDrivePath.IsMatch(path)) {
+				if (Directory.GetLogicalDrives().All(drive => !drive.Equals(path, StringComparison.CurrentCultureIgnoreCase))) {
+					LogError(string.Format("Drive not found: {0}", path));
+
+					throw new Exception("Drive not found");
+				}
+
+				path = string.Format("{0}:", path[0]);
+			} else if (!Directory.Exists(Path.GetDirectoryName(path))) {
+				LogError(string.Format("Directory not found: {0}", path));
+
+				throw new Exception("Directory not found");
+			}
+
+			path = string.Format("{0}/{1}_{2:yyyy-MM-dd_HH-mm-ss}.log", path, prefix, DateTime.Now);
+
+			File.WriteAllText(path, GetHistoryString(stripRichText));
+
+			return path.Replace("\\", "/");
+		}
+
+		/// <summary>Copy console history to the clipboard (<see cref="GUIUtility.systemCopyBuffer"/>).</summary>
+		public static void CopyHistoryToClipboard(bool stripRichText = false) {
+			GUIUtility.systemCopyBuffer = GetHistoryString(stripRichText);
+		}
+
 		public static void ClearConsoleView() {
 			m_instance.m_consoleView.ClearConsoleView();
+		}
+
+		public static void SetHelpTextFormat(string helpTextFormat) {
+			m_helpTextFormat = helpTextFormat;
 		}
 
 		public static void PrintHelpText() {
@@ -60,7 +126,12 @@ namespace HUDConsole {
 #region Private
 		private static Console m_instance = null;
 
-		private const string m_helpTextFormat = "{0} : {1}";
+		private static string m_helpTextFormat = "{0} : {1}";
+
+		/// <summary>Tests whether a string is a drive root. e.g. "D:\"</summary>
+		const string m_regexDrivePath = @"^\w:(?:\\|\/)?$";
+		/// <summary>Tests whether a string is a drive root. e.g. "D:\"</summary>
+		static readonly Regex m_isDrivePath = new Regex(m_regexDrivePath);
 
 		[Header("History")]
 		[SerializeField] private ConsoleHistory m_consoleHistory;
@@ -100,6 +171,8 @@ namespace HUDConsole {
 			AddCommand("Console.Log", ConsoleCoreCommands.ConsoleLog, "Display message to console.");
 			AddCommand("Console.LogWarning", ConsoleCoreCommands.ConsoleLogWarning, "Display warning message to console.");
 			AddCommand("Console.LogError", ConsoleCoreCommands.ConsoleLogError, "Display error message to console.");
+			AddCommand("Console.Save", ConsoleCoreCommands.ConsoleSave, "Save console to log file.");
+			AddCommand("Console.Copy", ConsoleCoreCommands.ConsoleCopy, "Copy console to clipboard.");
 			AddCommand("Console.Clear", ConsoleCoreCommands.ConsoleClear, "Clear console.");
 			AddCommand("Help", ConsoleCoreCommands.Help, "List of commands and their help text");
 
@@ -116,25 +189,28 @@ namespace HUDConsole {
 	#region Commands
 		private static Dictionary<string, ConsoleCommand> m_commands = new Dictionary<string, ConsoleCommand>();
 
+		/// <summary>Splits a string by spaces, unless surrounded by (unescaped) single or double quotes.</summary>
+		const string m_regexStringSplit = @"(""[^""\\]*(?:\\.[^""\\]*)*""|'[^'\\]*(?:\\.[^'\\]*)*'|[\S]+)+";
+		/// <summary>Tests whether a string starts and ends with either double or single quotes (not a mix).</summary>
+		const string m_regexQuoteWrapped = @"^"".*""$|^'.*'$";
+		/// <summary>Tests whether a string starts and ends with either double or single quotes (not a mix).</summary>
+		static readonly Regex m_isWrappedInQuotes = new Regex(m_regexQuoteWrapped);
+
 		private static void ParseCommand(string commandString) {
 			ConsoleHistory.CommandHistoryAdd(commandString);
 
 			commandString = commandString.Trim();
 
-			string[] cmdSplit = commandString.Split(' ');
+			List<string> cmdSplit = ParseArguments(commandString);
 
-			string cmdName = cmdSplit[0];
-			cmdName = cmdName.ToLower();
-			string[] cmdArgs = new string[cmdSplit.Length - 1];
-			for(int i = 1; i < cmdSplit.Length; i++) {
-				cmdArgs[i - 1] = cmdSplit[i];
-			}
+			string cmdName = cmdSplit[0].ToLower();
+			cmdSplit.RemoveAt(0);
 
 			ConsoleLog newLog = new ConsoleLog("> " + commandString, "", LogType.Log, false, Color.white, Color.black);
 			ConsoleHistory.LogAdd(newLog);
 
 			try {
-				m_commands[cmdName].handler(cmdArgs);
+				m_commands[cmdName].handler(cmdSplit.ToArray());
 			}
 			catch(KeyNotFoundException) {
 				LogError(String.Format("Command \"{0}\" not found.", cmdName));
@@ -142,6 +218,20 @@ namespace HUDConsole {
 			catch(Exception) {
 
 			}
+		}
+
+		static List<string> ParseArguments(string commandString) {
+			List<string> args = new List<string>();
+
+			foreach (Match match in Regex.Matches(commandString, m_regexStringSplit)) {
+				string value = match.Value.Trim();
+
+				if (m_isWrappedInQuotes.IsMatch(value)) { value = value.Substring(1, value.Length - 2); }
+
+				args.Add(value);
+			}
+
+			return args;
 		}
 	#endregion Commands
 
