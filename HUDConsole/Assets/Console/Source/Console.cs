@@ -61,28 +61,30 @@ namespace HUDConsole {
 			List<ConsoleLog> history = GetHistoryConsoleLogs();
 			StringBuilder stringBuilder = new StringBuilder();
 
-			foreach (ConsoleLog log in history) {
+			foreach(ConsoleLog log in history) {
 				stringBuilder.AppendLine(log.logString.Trim());
 				if(log.stackTrace != "") { stringBuilder.AppendLine(log.stackTrace.Trim()); }
 				stringBuilder.Append(Environment.NewLine);
 			}
 
-			return (stripRichText ? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty) : stringBuilder.ToString()).Trim();
+			return(stripRichText ? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty) : stringBuilder.ToString()).Trim();
 		}
 
 		/// <summary>Save console history to a log file and return the file's path.</summary>
 		public static string SaveHistoryToLogFile(string path = "", string prefix = "console", bool stripRichText = false) {
 			path = path.Trim();
 
-			if (path == string.Empty) {
+			if(path == string.Empty) {
 				path = Application.persistentDataPath;
-			} else if (path.EndsWith(":")) {
+			}
+			else if(path.EndsWith(":")) {
 				path += "\\";
-			} else if (path.EndsWith("/")) {
+			}
+			else if(path.EndsWith("/")) {
 				path = path.Replace("/", "\\");
 			}
 
-			if (m_isDrivePath.IsMatch(path)) {
+			if(m_isDrivePath.IsMatch(path)) {
 				if (Directory.GetLogicalDrives().All(drive => !drive.Equals(path, StringComparison.CurrentCultureIgnoreCase))) {
 					LogError(string.Format("Drive not found: {0}", path));
 
@@ -90,7 +92,8 @@ namespace HUDConsole {
 				}
 
 				path = string.Format("{0}:", path[0]);
-			} else if (!Directory.Exists(Path.GetDirectoryName(path))) {
+			}
+			else if(Directory.Exists(Path.GetDirectoryName(path)) == false) {
 				LogError(string.Format("Directory not found: {0}", path));
 
 				throw new Exception("Directory not found");
@@ -151,6 +154,12 @@ namespace HUDConsole {
 		[SerializeField] private ConsoleViewAbstract m_consoleViewPrefab;
 		private ConsoleViewAbstract m_consoleView;
 
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+		private static void InstantiateConsole()
+		{
+			Instantiate(Resources.Load("Console"));
+		}
+
 		private void Awake() {
 			if(m_instance == null) {
 				m_instance = this;
@@ -164,7 +173,7 @@ namespace HUDConsole {
 			m_consoleView = Instantiate(m_consoleViewPrefab);
 			m_consoleView.transform.SetParent(transform, false);
 
-			if (m_enableDefaultCommands == false) { return; }
+			if(m_enableDefaultCommands == false) { return; }
 
 			// Add core commands.
 			AddCommand("Echo", ConsoleCoreCommands.Echo, "Display message to console.");
@@ -223,10 +232,10 @@ namespace HUDConsole {
 		static List<string> ParseArguments(string commandString) {
 			List<string> args = new List<string>();
 
-			foreach (Match match in Regex.Matches(commandString, m_regexStringSplit)) {
+			foreach(Match match in Regex.Matches(commandString, m_regexStringSplit)) {
 				string value = match.Value.Trim();
 
-				if (m_isWrappedInQuotes.IsMatch(value)) { value = value.Substring(1, value.Length - 2); }
+				if(m_isWrappedInQuotes.IsMatch(value)) { value = value.Substring(1, value.Length - 2); }
 
 				args.Add(value);
 			}

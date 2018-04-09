@@ -424,7 +424,7 @@ namespace HUDConsole {
 
 			Console.Log(stringBuilder.ToString(), LogType.Log, false);
 		}
- 	#endregion Command
+	#endregion Command
 
 	#region ColorSet
 		private void ApplyColorSet() {
