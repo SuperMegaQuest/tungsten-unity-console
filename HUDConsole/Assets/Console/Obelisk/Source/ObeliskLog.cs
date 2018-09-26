@@ -28,16 +28,16 @@ namespace HUDConsole {
 #endregion Public
 
 #region Private
-		private Image _background;
-		private Button _button;
-		private Text _text;
-		private GameObject _stackTraceGameObject;
-		private Image _stackTraceImage;
+		[SerializeField] private Image _background;
+		[SerializeField] private Button _button;
+		[SerializeField] private Text _text;
+		[SerializeField] private GameObject _stackTraceGameObject;
+		[SerializeField] private Image _stackTraceImage;
 
 		private const float _heightIncrement = 20.0f;
 
 		private void Awake() {
-			GetComponents();
+			SetupComponents();
 		}
 
 		private void OnRectTransformDimensionsChange() {
@@ -47,16 +47,9 @@ namespace HUDConsole {
 			RectTransform.sizeDelta = new Vector2(RectTransform.sizeDelta.x, newHeight);
 		}
 
-		private void GetComponents() {
+		private void SetupComponents() {
 			RectTransform = GetComponent<RectTransform>();
-
-			_background = transform.Find("Button").GetComponent<Image>();
-			_text = transform.Find("Text").GetComponent<Text>();
-
-			_button = transform.Find("Button").GetComponent<Button>();
 			_button.onClick.AddListener(delegate { ButtonHandler(_button); });
-			_stackTraceGameObject = transform.Find("Image_StackTrace").gameObject;
-			_stackTraceImage = _stackTraceGameObject.GetComponent<Image>();
 			_stackTraceImage.color = ObeliskConsole.ColorSet.IconColor;
 		}
 

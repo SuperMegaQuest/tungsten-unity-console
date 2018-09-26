@@ -22,12 +22,8 @@ namespace HUDConsole {
 #endregion Public
 
 #region Private
-		private Transform _container;
+		[SerializeField] private Transform _container;
 		private Vector3 _dragOffsetBegin = Vector3.zero;
-
-		private void Awake() {
-			_container = transform.Find("Container");
-		}
 #endregion Private
 	}
 }

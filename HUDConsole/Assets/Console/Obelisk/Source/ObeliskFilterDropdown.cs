@@ -16,44 +16,43 @@ namespace HUDConsole {
 #endregion Public
 
 #region Private
-		private GameObject _toggles;
+		[Header("Dropdown")]
+		[SerializeField] private GameObject _togglesContainer;
+		[SerializeField] private Button _dropdownButton;
+		[SerializeField] private Image _dropdownButtonImage;
+		[SerializeField] private Image _dropdownSymbolBackgroundImage;
+		[SerializeField] private Image _dropdownSymbolImage;
+		[SerializeField] private Image _dropdownArrowImage;
 
-		// Dropdown.
-		private Button _dropdownButton;
-		private Image _dropdownButtonImage;
-		private Image _dropdownSymbolBackgroundImage;
-		private Image _dropdownSymbolImage;
-		private Image _dropdownArrowImage;
+		[Header("Error")]
+		[SerializeField] private Toggle _errorToggle;
+		[SerializeField] private Image _errorToggleButtonImage;
+		[SerializeField] private Image _errorToggleIconImage;
+		[SerializeField] private Image _errorToggleIconBackgroundImage;
 
-		// Error.
-		private Toggle _errorToggle;
-		private Image _errorToggleIconImage;
-		private Image _errorToggleIconBackgroundImage;
-		private Image _errorToggleButtonImage;
+		[Header("Assert")]
+		[SerializeField] private Toggle _assertToggle;
+		[SerializeField] private Image _assertToggleButtonImage;
+		[SerializeField] private Image _assertToggleIconImage;
+		[SerializeField] private Image _assertToggleIconBackgroundImage;
 
-		// Assert.
-		private Toggle _assertToggle;
-		private Image _assertToggleIconImage;
-		private Image _assertToggleIconBackgroundImage;
-		private Image _assertToggleButtonImage;
+		[Header("Warning")]
+		[SerializeField] private Toggle _warningToggle;
+		[SerializeField] private Image _warningToggleButtonImage;
+		[SerializeField] private Image _warningToggleIconImage;
+		[SerializeField] private Image _warningToggleIconBackgroundImage;
 
-		// Warning
-		private Toggle _warningToggle;
-		private Image _warningToggleIconImage;
-		private Image _warningToggleIconBackgroundImage;
-		private Image _warningToggleButtonImage;
+		[Header("Log")]
+		[SerializeField] private Toggle _logToggle;
+		[SerializeField] private Image _logToggleButtonImage;
+		[SerializeField] private Image _logToggleIconImage;
+		[SerializeField] private Image _logToggleIconIconBackgroundImage;
 
-		// Log
-		private Toggle _logToggle;
-		private Image _logToggleIconImage;
-		private Image _logToggleIconIconBackgroundImage;
-		private Image _logToggleButtonImage;
-
-		// Exception.
-		private Toggle _exceptionToggle;
-		private Image _exceptionToggleIconImage;
-		private Image _exceptionToggleIconBackgroundImage;
-		private Image _exceptionToggleButtonImage;
+		[Header("Exception")]
+		[SerializeField] private Toggle _exceptionToggle;
+		[SerializeField] private Image _exceptionToggleButtonImage;
+		[SerializeField] private Image _exceptionToggleIconImage;
+		[SerializeField] private Image _exceptionToggleIconBackgroundImage;
 
 		private bool _dropdownActive = false;
 
@@ -68,61 +67,28 @@ namespace HUDConsole {
 		private Action FilterSettingsChanged;
 
 		private void Awake() {
-			GetComponents();
+			SetupComponents();
 			ApplyColorSet();
 		}
 
-		private void GetComponents() {
-			_toggles = transform.Find("Toggles").gameObject;
-
+		private void SetupComponents() {
 			// Dropdown.
-			_dropdownButton = transform.Find("Button").GetComponent<Button>();
-			_dropdownButtonImage = transform.Find("Button").GetComponent<Image>();
 			_dropdownButton.onClick.AddListener(delegate { DropdownButtonHandler(_dropdownButton); });
 
-			_dropdownSymbolBackgroundImage = transform.Find("Symbol").GetComponent<Image>();
-			_dropdownSymbolImage = transform.Find("Symbol/Image").GetComponent<Image>();
-			_dropdownArrowImage = transform.Find("Button/Image").GetComponent<Image>();
-
 			// Error.
-			_errorToggle = transform.Find("Toggles/Toggle_Error").GetComponent<Toggle>();
-			_errorToggleButtonImage = transform.Find("Toggles/Toggle_Error").GetComponent<Image>();
 			_errorToggle.onValueChanged.AddListener(delegate { ErrorToggleHandler(_errorToggle); });
 
-			_errorToggleIconImage = transform.Find("Toggles/Toggle_Error/IconBackground/Image").GetComponent<Image>();
-			_errorToggleIconBackgroundImage = transform.Find("Toggles/Toggle_Error/IconBackground").GetComponent<Image>();
-
 			// Assert.
-			_assertToggle = transform.Find("Toggles/Toggle_Assert").GetComponent<Toggle>();
-			_assertToggleButtonImage = transform.Find("Toggles/Toggle_Assert").GetComponent<Image>();
 			_assertToggle.onValueChanged.AddListener(delegate { AssertToggleHandler(_assertToggle); });
 
-			_assertToggleIconImage = transform.Find("Toggles/Toggle_Assert/IconBackground/Image").GetComponent<Image>();
-			_assertToggleIconBackgroundImage = transform.Find("Toggles/Toggle_Assert/IconBackground").GetComponent<Image>();
-
 			// Warning.
-			_warningToggle = transform.Find("Toggles/Toggle_Warning").GetComponent<Toggle>();
-			_warningToggleButtonImage = transform.Find("Toggles/Toggle_Warning").GetComponent<Image>();
 			_warningToggle.onValueChanged.AddListener(delegate { WarningToggleHandler(_warningToggle); });
 
-			_warningToggleIconImage = transform.Find("Toggles/Toggle_Warning/IconBackground/Image").GetComponent<Image>();
-			_warningToggleIconBackgroundImage = transform.Find("Toggles/Toggle_Warning/IconBackground").GetComponent<Image>();
-
 			// Log.
-			_logToggle = transform.Find("Toggles/Toggle_Log").GetComponent<Toggle>();
-			_logToggleButtonImage = transform.Find("Toggles/Toggle_Log").GetComponent<Image>();
 			_logToggle.onValueChanged.AddListener(delegate { LogToggleHandler(_logToggle); });
 
-			_logToggleIconImage = transform.Find("Toggles/Toggle_Log/IconBackground/Image").GetComponent<Image>();
-			_logToggleIconIconBackgroundImage = transform.Find("Toggles/Toggle_Log/IconBackground").GetComponent<Image>();
-
 			// Exception.
-			_exceptionToggle = transform.Find("Toggles/Toggle_Exception").GetComponent<Toggle>();
-			_exceptionToggleButtonImage = transform.Find("Toggles/Toggle_Exception").GetComponent<Image>();
 			_exceptionToggle.onValueChanged.AddListener(delegate { ExceptionToggleHandler(_exceptionToggle); });
-
-			_exceptionToggleIconImage = transform.Find("Toggles/Toggle_Exception/IconBackground/Image").GetComponent<Image>();
-			_exceptionToggleIconBackgroundImage = transform.Find("Toggles/Toggle_Exception/IconBackground").GetComponent<Image>();
 		}
 
 		private void ApplyColorSet() {
@@ -158,11 +124,11 @@ namespace HUDConsole {
 			if (_dropdownActive) {
 				_dropdownActive = false;
 
-				_toggles.SetActive(false);
+				_togglesContainer.SetActive(false);
 			} else {
 				_dropdownActive = true;
 
-				_toggles.SetActive(true);
+				_togglesContainer.SetActive(true);
 			}
 		}
 

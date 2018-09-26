@@ -37,7 +37,7 @@ namespace HUDConsole {
 #endregion Public
 
 #region Private
-		private RectTransform _container;
+		[SerializeField] private RectTransform _container;
 
 		private Vector3 _resizePosBegin = Vector3.zero;
 		private Vector3 _resizeMousePosBegin = Vector3.zero;
@@ -45,10 +45,6 @@ namespace HUDConsole {
 
 		[Tooltip("Minimum size the console can be set to.")]
 		[SerializeField] private Vector2 _resizeMin = new Vector2(256f, 128f);
-
-		private void Awake() {
-			_container = transform.Find("Container").GetComponent<RectTransform>();
-		}
 #endregion Private
 	}
 }

@@ -151,6 +151,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a2de4984a1cc1499419c9471d9830b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _background: {fileID: 114139762628070054}
+  _button: {fileID: 114822286854424096}
+  _text: {fileID: 114255094283428854}
+  _stackTraceGameObject: {fileID: 1373221818908740}
+  _stackTraceImage: {fileID: 114788258416133620}
 --- !u!114 &114788258416133620
 MonoBehaviour:
   m_ObjectHideFlags: 1

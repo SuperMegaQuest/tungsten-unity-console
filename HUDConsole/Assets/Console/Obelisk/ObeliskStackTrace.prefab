@@ -400,7 +400,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f7626a7489bef40858ba4088e0d456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resizeMin: {x: 256, y: 128}
+  _container: {fileID: 224492747251803400}
+  _resizeMin: {x: 256, y: 128}
 --- !u!114 &114407993730467918
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -784,6 +785,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2f40c65f7da24540bb0134c00918d86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _container: {fileID: 1391289199855666}
+  _containerBackgroundImage: {fileID: 114626083654977808}
+  _outline: {fileID: 114928405978797830}
+  _resizeHandleBackgroundImage: {fileID: 114961137175260658}
+  _resizeHandleImage: {fileID: 114660055651049046}
+  _titlebarBackgroundImage: {fileID: 114742926460094938}
+  _titlebarIconImage: {fileID: 114692340703772278}
+  _titlebarTitleText: {fileID: 114292562756579950}
+  _closeButton: {fileID: 114899142098130752}
+  _closeButtonBackgroundImage: {fileID: 114069410599272548}
+  _closeButtonIconImage: {fileID: 114805496786182498}
+  _scrollRect: {fileID: 114715476573042336}
+  _scrollbar: {fileID: 114401389011859314}
+  _scrollbarBackgroundImage: {fileID: 114686909367488208}
+  _stackTraceText: {fileID: 114455452979447322}
 --- !u!114 &114899142098130752
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -877,6 +893,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 507a73d1460efc943874ef53104fcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _container: {fileID: 224492747251803400}
 --- !u!222 &222185503934951258
 CanvasRenderer:
   m_ObjectHideFlags: 1
