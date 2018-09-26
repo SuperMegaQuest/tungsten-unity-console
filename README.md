@@ -11,11 +11,8 @@
 
 HUD Console is a polished, extendable console that can easily be added to your existing Unity projects.
 
-## Branches
-Master branch is used for development. If you're looking to use the console in your project I suggest grabbing it from the release branch.
-
 ## Adding HUD Console to your project.
-To add the console to your project simply drag Console/Console into your scene.
+To add the console to your project import this into your Unity project, the console will self instantiate at runtime.
 The console can be opened by pressing Grave '`' (The key above tab).
 
 ## Accessing the Console.
@@ -62,7 +59,7 @@ In the Example folder look at Scripts/Welcome.cs or Scripts/Graph.cs line 54.
 ## Built in commands.
 The built in commands can be found in Console/Scripts/ConsoleCoreCommands.cs, and are added to the console in Console/Scripts/Console line 91.
 
-As everyones requirements of a console range quite considerably I have purposefully only included a handful of commands, however I plan on adding more in the future.
+As everyone's requirements of a console range quite considerably I have purposefully only included a handful of commands, however I plan on adding more in the future.
 
 ## Creating new Color Sets.
 New color sets can be created to customize the appearance of the console.
