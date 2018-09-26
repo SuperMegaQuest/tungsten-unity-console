@@ -60,7 +60,7 @@ Built in commands.
 	The built in commands can be found in Console/Scripts/ConsoleCoreCommands.cs,
 	and are added to the console in Console/Scripts/Console line 91.
 
-	As everyones requirements of a console would range quite considerably
+	As everyone's requirements of a console would range quite considerably
 	I have purposefully only included a handful of commands, however I plan on adding more later.
 
 ----- ----- ----- -----

@@ -13,7 +13,7 @@ namespace HUDConsole {
 		private Action OnDimensionsChanged;
 
 		private void OnRectTransformDimensionsChange() {
-			if(OnDimensionsChanged != null) {
+			if (OnDimensionsChanged != null) {
 				OnDimensionsChanged();
 			}
 		}

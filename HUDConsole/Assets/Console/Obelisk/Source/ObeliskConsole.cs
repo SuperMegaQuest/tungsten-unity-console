@@ -14,96 +14,98 @@ namespace HUDConsole {
 		public override void ClearConsoleView() {
 			base.ClearConsoleView();
 
-			for(var i = 0; i < m_logViewHistory.Count; i++) {
-				PoolLog(m_logViewHistory[i]);
+			for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
+				PoolLog(_logViewHistory[i]);
 			}
-			m_logViewHistory.Clear();
+
+			_logViewHistory.Clear();
 
 			ResizeLogLayout();
 		}
 
 		public static void OpenStackTraceForLog(ConsoleLog consoleLog) {
-			m_obeliskStackTrace.Open(consoleLog);
+			_obeliskStackTrace.Open(consoleLog);
 		}
 
-		public static ObeliskColorSet ColorSet {
-			get; private set;
-		}
+		public static ObeliskColorSet ColorSet { get; private set; }
 #endregion Public
 
 #region Private
-		private static ObeliskConsole m_instance = null;
+		private static ObeliskConsole _instance = null;
 
 		// Main.
-		private RectTransform m_container;
-		private ListenForDimensionsChange m_containerListener;
-		private Transform m_obeliskLogPoolContainer;
-		private Image m_containerBackgroundImage;
-		private Outline m_outline;
-		private Image m_resizeHandleImage;
+		private RectTransform _container;
+		private ListenForDimensionsChange _containerListener;
+		private Transform _obeliskLogPoolContainer;
+		private Image _containerBackgroundImage;
+		private Outline _outline;
+		private Image _resizeHandleImage;
 
 		// Titlebar.
-		private Image m_titlebarBackgroundImage;
-		private Image m_titlebarIconImage;
-		private Text m_titlebarTitleText;
-		private Button m_closeButton;
-		private Image m_closeButtonBackgroundImage;
-		private Image m_closeButtonIconImage;
+		private Image _titlebarBackgroundImage;
+		private Image _titlebarIconImage;
+		private Text _titlebarTitleText;
+		private Button _closeButton;
+		private Image _closeButtonBackgroundImage;
+		private Image _closeButtonIconImage;
 
 		// Filter.
-		private ObeliskFilterDropdown m_filterDropdown;
+		private ObeliskFilterDropdown _filterDropdown;
 
 		// Log.
-		private ScrollRect m_scrollRect;
-		private RectTransform m_logLayout;
-		private Scrollbar m_scrollbar;
-		private Image m_scrollbarBackgroundImage;
+		private ScrollRect _scrollRect;
+		private RectTransform _logLayout;
+		private Scrollbar _scrollbar;
+		private Image _scrollbarBackgroundImage;
 
 		// Input.
-		private Image m_inputContainerBackgroundImage;
+		private Image _inputContainerBackgroundImage;
 
 		// Command.
-		private RectTransform m_commandContainer;
-		private Image m_commandSymbolBackgroundImage;
-		private Image m_commandSymbolImage;
-		private InputField m_commandInputField;
-		private Image m_commandInputFieldImage;
-		private Text m_commandInputFieldText;
+		private RectTransform _commandContainer;
+		private Image _commandSymbolBackgroundImage;
+		private Image _commandSymbolImage;
+		private InputField _commandInputField;
+		private Image _commandInputFieldImage;
+		private Text _commandInputFieldText;
 
 		// Search.
-		private RectTransform m_searchContainer;
-		private Image m_searchSymbolBackgroundImage;
-		private Image m_searchSymbolImage;
-		private InputField m_searchInputField;
-		private Image m_searchInputFieldImage;
-		private Text m_searchInputFieldText;
+		private RectTransform _searchContainer;
+		private Image _searchSymbolBackgroundImage;
+		private Image _searchSymbolImage;
+		private InputField _searchInputField;
+		private Image _searchInputFieldImage;
+		private Text _searchInputFieldText;
 
-		private List<ObeliskLog> m_logViewHistory = new List<ObeliskLog>();
+		private List<ObeliskLog> _logViewHistory = new List<ObeliskLog>();
 
-		[SerializeField] private int m_logViewHistoryMax = 64;
-		private Queue<ObeliskLog> m_obeliskLogPool = new Queue<ObeliskLog>();
+		[SerializeField]
+		private int _logViewHistoryMax = 64;
+
+		private Queue<ObeliskLog> _obeliskLogPool = new Queue<ObeliskLog>();
 
 		[Header("Obelisk Prefabs")]
-		[SerializeField] private ObeliskLog m_obeliskLogPrefab;
-		[SerializeField] private ObeliskStackTrace m_obeliskStackTracePrefab;
-		private static ObeliskStackTrace m_obeliskStackTrace;
+		[SerializeField] private ObeliskLog _obeliskLogPrefab;
+
+		[SerializeField] private ObeliskStackTrace _obeliskStackTracePrefab;
+
+		private static ObeliskStackTrace _obeliskStackTrace;
 
 		[Header("Color Set")]
 		[Tooltip("Color set objects.\nMust be in same order as DefaultViewColorSetName enum.")]
-		[SerializeField] private ObeliskColorSet m_colorSet;
+		[SerializeField] private ObeliskColorSet _colorSet;
 
 		protected override void Awake() {
 			base.Awake();
 
-			if(m_instance == null) {
-				m_instance = this;
-			}
-			else {
+			if (_instance == null) {
+				_instance = this;
+			} else {
 				Debug.LogError("[Console] Two instances of ObeliskConsole detected.");
 				Destroy(gameObject);
 			}
 
-			ColorSet = Instantiate(m_colorSet);
+			ColorSet = Instantiate(_colorSet);
 
 			GetComponents();
 			LogAwake();
@@ -111,8 +113,8 @@ namespace HUDConsole {
 		}
 
 		private void Start() {
-			m_obeliskStackTrace = Instantiate(m_obeliskStackTracePrefab);
-			m_obeliskStackTrace.transform.SetParent(transform.parent, false);
+			_obeliskStackTrace = Instantiate(_obeliskStackTracePrefab);
+			_obeliskStackTrace.transform.SetParent(transform.parent, false);
 		}
 
 		private void Update() {
@@ -127,73 +129,73 @@ namespace HUDConsole {
 
 		private void GetComponents() {
 			// Main.
-			m_container = transform.Find("Container").GetComponent<RectTransform>();
-			m_containerListener = m_container.GetComponent<ListenForDimensionsChange>();
-			m_obeliskLogPoolContainer = transform.Find("Container/LogPool");
-			m_containerListener.SubscribeToDimensionsChange(OnContainerRectTransformDimensionsChange);
-			m_containerBackgroundImage = m_container.GetComponent<Image>();
-			m_outline = m_container.GetComponent<Outline>();
-			m_resizeHandleImage = transform.Find("Container/Input/Search/ResizeHandle/Image").GetComponent<Image>();
+			_container = transform.Find("Container").GetComponent<RectTransform>();
+			_containerListener = _container.GetComponent<ListenForDimensionsChange>();
+			_obeliskLogPoolContainer = transform.Find("Container/LogPool");
+			_containerListener.SubscribeToDimensionsChange(OnContainerRectTransformDimensionsChange);
+			_containerBackgroundImage = _container.GetComponent<Image>();
+			_outline = _container.GetComponent<Outline>();
+			_resizeHandleImage = transform.Find("Container/Input/Search/ResizeHandle/Image").GetComponent<Image>();
 
 			// Titlebar.
-			m_titlebarBackgroundImage = transform.Find("Container/Titlebar").GetComponent<Image>();
-			m_titlebarIconImage = transform.Find("Container/Titlebar/Icon").GetComponent<Image>();
-			m_titlebarTitleText = transform.Find("Container/Titlebar/Title").GetComponent<Text>();
-			m_closeButton = transform.Find("Container/Titlebar/Menu/Close").GetComponent<Button>();
-			m_closeButton.onClick.AddListener(delegate { CloseButtonHandler(m_closeButton); });
-			m_closeButtonBackgroundImage = transform.Find("Container/Titlebar/Menu/Close").GetComponent<Image>();
-			m_closeButtonIconImage = transform.Find("Container/Titlebar/Menu/Close/Image").GetComponent<Image>();
+			_titlebarBackgroundImage = transform.Find("Container/Titlebar").GetComponent<Image>();
+			_titlebarIconImage = transform.Find("Container/Titlebar/Icon").GetComponent<Image>();
+			_titlebarTitleText = transform.Find("Container/Titlebar/Title").GetComponent<Text>();
+			_closeButton = transform.Find("Container/Titlebar/Menu/Close").GetComponent<Button>();
+			_closeButton.onClick.AddListener(delegate { CloseButtonHandler(_closeButton); });
+			_closeButtonBackgroundImage = transform.Find("Container/Titlebar/Menu/Close").GetComponent<Image>();
+			_closeButtonIconImage = transform.Find("Container/Titlebar/Menu/Close/Image").GetComponent<Image>();
 
 			// Filter.
-			m_filterDropdown = transform.Find("Container/Titlebar/Menu/Filter").GetComponent<ObeliskFilterDropdown>();
-			m_filterDropdown.SubscribeToFilterChanges(FilterUpdated);
+			_filterDropdown = transform.Find("Container/Titlebar/Menu/Filter").GetComponent<ObeliskFilterDropdown>();
+			_filterDropdown.SubscribeToFilterChanges(FilterUpdated);
 
 			// Log.
-			m_scrollRect = transform.Find("Container/Log").GetComponent<ScrollRect>();
-			m_logLayout = transform.Find("Container/Log/LogLayout").GetComponent<RectTransform>();
-			m_scrollbar = transform.Find("Container/Log/Scrollbar").GetComponent<Scrollbar>();
-			m_scrollbarBackgroundImage = transform.Find("Container/Log/Scrollbar").GetComponent<Image>();
+			_scrollRect = transform.Find("Container/Log").GetComponent<ScrollRect>();
+			_logLayout = transform.Find("Container/Log/LogLayout").GetComponent<RectTransform>();
+			_scrollbar = transform.Find("Container/Log/Scrollbar").GetComponent<Scrollbar>();
+			_scrollbarBackgroundImage = transform.Find("Container/Log/Scrollbar").GetComponent<Image>();
 
 			// Input container.
-			m_inputContainerBackgroundImage = transform.Find("Container/Input").GetComponent<Image>();
-			m_commandContainer = transform.Find("Container/Input/Command").GetComponent<RectTransform>();
-			m_searchContainer = transform.Find("Container/Input/Search").GetComponent<RectTransform>();
+			_inputContainerBackgroundImage = transform.Find("Container/Input").GetComponent<Image>();
+			_commandContainer = transform.Find("Container/Input/Command").GetComponent<RectTransform>();
+			_searchContainer = transform.Find("Container/Input/Search").GetComponent<RectTransform>();
 
 			// Command.
-			m_commandSymbolBackgroundImage = transform.Find("Container/Input/Command/Symbol").GetComponent<Image>();
-			m_commandSymbolImage = transform.Find("Container/Input/Command/Symbol/Image").GetComponent<Image>();
-			m_commandInputField = transform.Find("Container/Input/Command/InputField").GetComponent<InputField>();
-			m_commandInputFieldImage = transform.Find("Container/Input/Command/InputField").GetComponent<Image>();
-			m_commandInputFieldText = transform.Find("Container/Input/Command/InputField/Text").GetComponent<Text>();
+			_commandSymbolBackgroundImage = transform.Find("Container/Input/Command/Symbol").GetComponent<Image>();
+			_commandSymbolImage = transform.Find("Container/Input/Command/Symbol/Image").GetComponent<Image>();
+			_commandInputField = transform.Find("Container/Input/Command/InputField").GetComponent<InputField>();
+			_commandInputFieldImage = transform.Find("Container/Input/Command/InputField").GetComponent<Image>();
+			_commandInputFieldText = transform.Find("Container/Input/Command/InputField/Text").GetComponent<Text>();
 
 			// Search.
-			m_searchSymbolBackgroundImage = transform.Find("Container/Input/Search/Symbol").GetComponent<Image>();
-			m_searchSymbolImage = transform.Find("Container/Input/Search/Symbol/Image").GetComponent<Image>();
-			m_searchInputField = transform.Find("Container/Input/Search/InputField").GetComponent<InputField>();
-			m_searchInputField.onValueChanged.AddListener(delegate { SearchInputFieldUpdated(m_searchInputField); });
-			m_searchInputFieldImage = transform.Find("Container/Input/Search/InputField").GetComponent<Image>();
-			m_searchInputFieldText = transform.Find("Container/Input/Search/InputField/Text").GetComponent<Text>();
+			_searchSymbolBackgroundImage = transform.Find("Container/Input/Search/Symbol").GetComponent<Image>();
+			_searchSymbolImage = transform.Find("Container/Input/Search/Symbol/Image").GetComponent<Image>();
+			_searchInputField = transform.Find("Container/Input/Search/InputField").GetComponent<InputField>();
+			_searchInputField.onValueChanged.AddListener(delegate { SearchInputFieldUpdated(_searchInputField); });
+			_searchInputFieldImage = transform.Find("Container/Input/Search/InputField").GetComponent<Image>();
+			_searchInputFieldText = transform.Find("Container/Input/Search/InputField/Text").GetComponent<Text>();
 		}
 
-	#region State
+#region State
 		private void StateUpdate() {
-			if(Input.GetKeyDown(KeyCode.BackQuote)) {
+			if (Input.GetKeyDown(KeyCode.BackQuote)) {
 				ToggleState();
 			}
 		}
 
 		private void ToggleState() {
-			SetEnabled(m_container.gameObject.activeSelf == false);
+			SetEnabled(_container.gameObject.activeSelf == false);
 		}
 
 		private void SetEnabled(bool enable) {
-			m_container.gameObject.SetActive(enable);
+			_container.gameObject.SetActive(enable);
 
-			m_scrollRect.normalizedPosition = Vector2.zero;
-			m_commandInputField.text = "";
+			_scrollRect.normalizedPosition = Vector2.zero;
+			_commandInputField.text = "";
 
-			if(enable) {
-				m_commandInputField.ActivateInputField();
+			if (enable) {
+				_commandInputField.ActivateInputField();
 			}
 
 			IsActive = enable;
@@ -202,9 +204,9 @@ namespace HUDConsole {
 		private void CloseButtonHandler(Button target) {
 			ToggleState();
 		}
-	#endregion State
+#endregion State
 
-	#region Log
+#region Log
 		private void LogAwake() {
 			FillPool();
 		}
@@ -212,9 +214,9 @@ namespace HUDConsole {
 		protected override void OnConsoleLogHistoryChanged() {
 			base.OnConsoleLogHistoryChanged();
 
-			ObeliskLog obeliskLog = m_obeliskLogPool.Dequeue();
-			obeliskLog.transform.SetParent(m_logLayout, false);
-			
+			ObeliskLog obeliskLog = _obeliskLogPool.Dequeue();
+			obeliskLog.transform.SetParent(_logLayout, false);
+
 			ConsoleLog consoleLog = Console.ConsoleHistory.LogGetLatest();
 			obeliskLog.SetLog(ref consoleLog);
 
@@ -222,137 +224,138 @@ namespace HUDConsole {
 		}
 
 		private void AddLogViewHistory(ObeliskLog obeliskLog) {
-			if(m_logViewHistory.Count >= m_logViewHistoryMax) {
-				PoolLog(m_logViewHistory[0]);
-				m_logViewHistory.RemoveAt(0);
+			if (_logViewHistory.Count >= _logViewHistoryMax) {
+				PoolLog(_logViewHistory[0]);
+				_logViewHistory.RemoveAt(0);
 			}
 
-			m_logViewHistory.Add(obeliskLog);
+			_logViewHistory.Add(obeliskLog);
 
 			ResizeLogLayout();
 
-			m_scrollRect.normalizedPosition = Vector2.zero;
+			_scrollRect.normalizedPosition = Vector2.zero;
 		}
 
 		private void FillPool() {
-			for(var i = 0; i < m_logViewHistoryMax + 1; i++) {
-				ObeliskLog log = Instantiate(m_obeliskLogPrefab);
-				log.transform.SetParent(m_obeliskLogPoolContainer, false);
+			for (var i = 0; i < _logViewHistoryMax + 1; i++) {
+				ObeliskLog log = Instantiate(_obeliskLogPrefab);
+				log.transform.SetParent(_obeliskLogPoolContainer, false);
 
-				m_obeliskLogPool.Enqueue(log);
+				_obeliskLogPool.Enqueue(log);
 			}
 		}
 
 		private void PoolLog(ObeliskLog obeliskLog) {
-			obeliskLog.transform.SetParent(m_obeliskLogPoolContainer, false);
-			m_obeliskLogPool.Enqueue(obeliskLog);
+			obeliskLog.transform.SetParent(_obeliskLogPoolContainer, false);
+			_obeliskLogPool.Enqueue(obeliskLog);
 		}
 
 		private void ResizeLogLayout() {
-			Vector2 logLayoutSizeCache = m_logLayout.sizeDelta;
-			Vector3 logLayoutPosCache = m_logLayout.localPosition;
-			float minHeight = m_container.sizeDelta.y - 40.0f;
+			Vector2 logLayoutSizeCache = _logLayout.sizeDelta;
+			Vector3 logLayoutPosCache = _logLayout.localPosition;
+			float minHeight = _container.sizeDelta.y - 40.0f;
 			float newHeight = 0.0f;
 
 			// Resize LogLayout so it can properly contain all the logs.
-			for(var i = 0; i < m_logViewHistory.Count; i++) {
-				newHeight += m_logViewHistory[i].RectTransform.sizeDelta.y;
+			for (var i = 0; i < _logViewHistory.Count; i++) {
+				newHeight += _logViewHistory[i].RectTransform.sizeDelta.y;
 			}
-			m_logLayout.sizeDelta = new Vector2(m_logLayout.sizeDelta.x, Mathf.Clamp(newHeight, minHeight, 4096.0f));
+
+			_logLayout.sizeDelta = new Vector2(_logLayout.sizeDelta.x, Mathf.Clamp(newHeight, minHeight, 4096.0f));
 
 			// Offset LogLayout relative to the size it just increased by.
 			float newPosY = 0.0f;
-			float sizeDifferenceY = m_logLayout.sizeDelta.y - logLayoutSizeCache.y;
+			float sizeDifferenceY = _logLayout.sizeDelta.y - logLayoutSizeCache.y;
 			newPosY = logLayoutPosCache.y + (sizeDifferenceY * 0.5f);
-			m_logLayout.localPosition = new Vector3(logLayoutPosCache.x, newPosY, 0.0f);
+			_logLayout.localPosition = new Vector3(logLayoutPosCache.x, newPosY, 0.0f);
 		}
-	#endregion Log
+#endregion Log
 
-	#region Filter
+#region Filter
 		private void FilterUpdated() {
-			for(var i = 0; i < m_logViewHistory.Count; i++) {
-				switch(m_logViewHistory[i].ConsoleLog.logType) {
+			for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
+				switch (_logViewHistory[i].ConsoleLog.logType) {
 					case LogType.Error: {
-						m_logViewHistory[i].gameObject.SetActive(!m_filterDropdown.GetFilterSetting(LogType.Error));
+						_logViewHistory[i].gameObject.SetActive(!_filterDropdown.GetFilterSetting(LogType.Error));
 						break;
 					}
 
 					case LogType.Assert: {
-						m_logViewHistory[i].gameObject.SetActive(!m_filterDropdown.GetFilterSetting(LogType.Assert));
+						_logViewHistory[i].gameObject.SetActive(!_filterDropdown.GetFilterSetting(LogType.Assert));
 						break;
 					}
 
 					case LogType.Warning: {
-						m_logViewHistory[i].gameObject.SetActive(!m_filterDropdown.GetFilterSetting(LogType.Warning));
+						_logViewHistory[i].gameObject.SetActive(!_filterDropdown.GetFilterSetting(LogType.Warning));
 						break;
 					}
 
 					case LogType.Log: {
-						m_logViewHistory[i].gameObject.SetActive(!m_filterDropdown.GetFilterSetting(LogType.Log));
+						_logViewHistory[i].gameObject.SetActive(!_filterDropdown.GetFilterSetting(LogType.Log));
 						break;
 					}
 
 					case LogType.Exception: {
-						m_logViewHistory[i].gameObject.SetActive(!m_filterDropdown.GetFilterSetting(LogType.Exception));
+						_logViewHistory[i].gameObject.SetActive(!_filterDropdown.GetFilterSetting(LogType.Exception));
 						break;
 					}
 				}
 			}
 		}
-	#endregion Filter
+#endregion Filter
 
-	#region Input
+#region Input
 		private void ResizeInputContainers() {
-			m_commandContainer.sizeDelta = new Vector2(m_container.sizeDelta.x * 0.68359375f, 20f);
-			m_searchContainer.sizeDelta = new Vector2(m_container.sizeDelta.x * 0.3125f, 20f);
+			_commandContainer.sizeDelta = new Vector2(_container.sizeDelta.x * 0.68359375f, 20f);
+			_searchContainer.sizeDelta = new Vector2(_container.sizeDelta.x * 0.3125f, 20f);
 
-			m_commandContainer.anchoredPosition = new Vector2(m_commandContainer.sizeDelta.x * 0.5f, 0f);
-			m_searchContainer.anchoredPosition = new Vector2(-m_searchContainer.sizeDelta.x * 0.5f, 0f);
+			_commandContainer.anchoredPosition = new Vector2(_commandContainer.sizeDelta.x * 0.5f, 0f);
+			_searchContainer.anchoredPosition = new Vector2(-_searchContainer.sizeDelta.x * 0.5f, 0f);
 		}
-	#endregion Input
+#endregion Input
 
-	#region Search
+#region Search
 		private void SearchInputFieldUpdated(InputField inputField) {
 			Search(inputField.text);
 		}
 
 		private void Search(string searchString) {
-			if(string.IsNullOrEmpty(searchString)) {
-				for(var i = 0; i < m_logViewHistory.Count; i++) {
-					m_logViewHistory[i].gameObject.SetActive(true);
+			if (string.IsNullOrEmpty(searchString)) {
+				for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
+					_logViewHistory[i].gameObject.SetActive(true);
 				}
 
 				return;
 			}
 
-			for(var i = 0; i < m_logViewHistory.Count; i++) {
+			for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
 				string searchStringLower = searchString.ToLowerInvariant();
-				string logStringLower = m_logViewHistory[i].ConsoleLog.logString.ToLowerInvariant();
+				string logStringLower = _logViewHistory[i].ConsoleLog.logString.ToLowerInvariant();
 
-				m_logViewHistory[i].gameObject.SetActive(logStringLower.Contains(searchStringLower));
+				_logViewHistory[i].gameObject.SetActive(logStringLower.Contains(searchStringLower));
 			}
 		}
-	#endregion Search
+#endregion Search
 
-	#region Command
-		private int m_commandHistoryDelta = 0;
+#region Command
+		private int _commandHistoryDelta = 0;
 
 		private void CommandUpdate() {
-			if(m_container.gameObject.activeSelf
-			&& EventSystem.current.currentSelectedGameObject == m_commandInputField.gameObject) {
+			if (_container.gameObject.activeSelf
+			&& EventSystem.current.currentSelectedGameObject == _commandInputField.gameObject) {
 				// Submit command.
-				if(Input.GetKeyDown(KeyCode.Return)
+				if (Input.GetKeyDown(KeyCode.Return)
 				|| Input.GetKeyDown(KeyCode.KeypadEnter)) {
 					CommandSubmit();
 				}
 
 				// Previous Command +
-				if(Input.GetKeyDown(KeyCode.UpArrow)) {
+				if (Input.GetKeyDown(KeyCode.UpArrow)) {
 					CommandSetPrevious(1);
 				}
 
 				// Previous Command -
-				if(Input.GetKeyDown(KeyCode.DownArrow)) {
+				if (Input.GetKeyDown(KeyCode.DownArrow)) {
 					CommandSetPrevious(-1);
 				}
 
@@ -363,11 +366,11 @@ namespace HUDConsole {
 		}
 
 		private void CommandSubmit() {
-			if(string.IsNullOrEmpty(m_commandInputField.text) == false) {
-				Console.ExecuteCommand(m_commandInputField.text);
-				m_commandInputField.text = "";
-				m_commandInputField.ActivateInputField();
-				m_commandHistoryDelta = 0;
+			if (string.IsNullOrEmpty(_commandInputField.text) == false) {
+				Console.ExecuteCommand(_commandInputField.text);
+				_commandInputField.text = "";
+				_commandInputField.ActivateInputField();
+				_commandHistoryDelta = 0;
 			}
 		}
 
@@ -375,43 +378,51 @@ namespace HUDConsole {
 			int commandHistoryCount = Console.ConsoleHistory.CommandHistoryCount();
 			int index = 0;
 
-			if(commandHistoryCount > 0) {
+			if (commandHistoryCount > 0) {
 				// Calculate commandHistory Delta.
 				// This is the distance from the present, into the history of commands.
 				// Needs to be between 0, and commandHistoryCount.
-				m_commandHistoryDelta = Mathf.Clamp(m_commandHistoryDelta + direction, 0, commandHistoryCount);
+				_commandHistoryDelta = Mathf.Clamp(_commandHistoryDelta + direction, 0, commandHistoryCount);
 
 				// Calculate history index.
 				// This is the index of the command we will be accessing.
 				// Needs to be between 0, and commandHistoryCount - 1.
-				index = Mathf.Clamp((commandHistoryCount - 1) - (m_commandHistoryDelta - 1), 0, commandHistoryCount - 1);
+				index = Mathf.Clamp((commandHistoryCount - 1) - (_commandHistoryDelta - 1), 0, commandHistoryCount - 1);
 
-				if(m_commandHistoryDelta == 0) {
-					m_commandInputField.text = "";
-				}
-				else {
-					m_commandInputField.text = Console.ConsoleHistory.CommandHistoryGet(index);
-					m_commandInputField.caretPosition = m_commandInputField.text.Length;
+				if (_commandHistoryDelta == 0) {
+					_commandInputField.text = "";
+				} else {
+					_commandInputField.text = Console.ConsoleHistory.CommandHistoryGet(index);
+					_commandInputField.caretPosition = _commandInputField.text.Length;
 				}
 			}
 		}
 
 		private void CommandAutoComplete() {
-			string input = m_commandInputField.text.Trim();
+			string input = _commandInputField.text.Trim();
 
-			if (input == "") { return; }
+			if (input == "") {
+				return;
+			}
 
 			List<ConsoleCommand> commands = Console.GetOrderedCommands().Where(command => command.commandName.StartsWith(input, StringComparison.CurrentCultureIgnoreCase)).ToList();
 
 			switch (commands.Count) {
-				case 0: return;
-				case 1:
-					m_commandInputField.text = commands[0].commandName;
-					m_commandInputField.MoveTextEnd(false);
+				case 0: {
 					return;
-				default:
+				}
+
+				case 1: {
+					_commandInputField.text = commands[0].commandName;
+					_commandInputField.MoveTextEnd(false);
+					
+					return;
+				}
+
+				default: {
 					LogAvailableAutoCompleteCommands(commands);
 					break;
+				}
 			}
 		}
 
@@ -424,48 +435,48 @@ namespace HUDConsole {
 
 			Console.Log(stringBuilder.ToString(), LogType.Log, false);
 		}
-	#endregion Command
+#endregion Command
 
-	#region ColorSet
+#region ColorSet
 		private void ApplyColorSet() {
 			// Main.
-			m_containerBackgroundImage.color = ColorSet.backgroundColor;
-			m_outline.effectColor = ColorSet.outlineColor;
-			m_resizeHandleImage.color = ColorSet.buttonColor;
+			_containerBackgroundImage.color = ColorSet.BackgroundColor;
+			_outline.effectColor = ColorSet.OutlineColor;
+			_resizeHandleImage.color = ColorSet.ButtonColor;
 
 			// Titlebar.
-			m_titlebarBackgroundImage.color = ColorSet.titlebarBackgroundColor;
-			m_titlebarIconImage.color = ColorSet.iconColor;
-			m_titlebarTitleText.color = ColorSet.titlebarTextColor;
-			m_closeButtonBackgroundImage.color = ColorSet.buttonColor;
-			m_closeButtonIconImage.color = ColorSet.iconColor;
+			_titlebarBackgroundImage.color = ColorSet.TitlebarBackgroundColor;
+			_titlebarIconImage.color = ColorSet.IconColor;
+			_titlebarTitleText.color = ColorSet.TitlebarTextColor;
+			_closeButtonBackgroundImage.color = ColorSet.ButtonColor;
+			_closeButtonIconImage.color = ColorSet.IconColor;
 
 			// Scrollbar.
-			m_scrollbarBackgroundImage.color = ColorSet.scrollbarBackgroundColor;
+			_scrollbarBackgroundImage.color = ColorSet.ScrollbarBackgroundColor;
 
 			var scrollbarColorBlock = new ColorBlock();
-			scrollbarColorBlock.normalColor = ColorSet.scrollbarSliderColor;
-			scrollbarColorBlock.highlightedColor = ColorSet.scrollbarSliderHighlightedColor;
-			scrollbarColorBlock.pressedColor = ColorSet.scrollbarSliderPressedColor;
+			scrollbarColorBlock.normalColor = ColorSet.ScrollbarSliderColor;
+			scrollbarColorBlock.highlightedColor = ColorSet.ScrollbarSliderHighlightedColor;
+			scrollbarColorBlock.pressedColor = ColorSet.ScrollbarSliderPressedColor;
 			scrollbarColorBlock.colorMultiplier = 1.0f;
-			m_scrollbar.colors = scrollbarColorBlock;
+			_scrollbar.colors = scrollbarColorBlock;
 
 			// Input
-			m_inputContainerBackgroundImage.color = ColorSet.inputContainerBackgroundColor;
+			_inputContainerBackgroundImage.color = ColorSet.InputContainerBackgroundColor;
 
 			// Command.
-			m_commandSymbolBackgroundImage.color = ColorSet.iconBackgroundColor;
-			m_commandSymbolImage.color = ColorSet.iconColor;
-			m_commandInputFieldImage.color = ColorSet.buttonColor;
-			m_commandInputFieldText.color = ColorSet.inputTextColor;
+			_commandSymbolBackgroundImage.color = ColorSet.IconBackgroundColor;
+			_commandSymbolImage.color = ColorSet.IconColor;
+			_commandInputFieldImage.color = ColorSet.ButtonColor;
+			_commandInputFieldText.color = ColorSet.InputTextColor;
 
 			// Search.
-			m_searchSymbolBackgroundImage.color = ColorSet.iconBackgroundColor;
-			m_searchSymbolImage.color = ColorSet.iconColor;
-			m_searchInputFieldImage.color = ColorSet.buttonColor;
-			m_searchInputFieldText.color = ColorSet.inputTextColor;
+			_searchSymbolBackgroundImage.color = ColorSet.IconBackgroundColor;
+			_searchSymbolImage.color = ColorSet.IconColor;
+			_searchInputFieldImage.color = ColorSet.ButtonColor;
+			_searchInputFieldText.color = ColorSet.InputTextColor;
 		}
-	#endregion ColorSet
+#endregion ColorSet
 #endregion Private
 	}
 }

@@ -1843,7 +1843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f7626a7489bef40858ba4088e0d456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_resizeMin: {x: 256, y: 128}
+  _resizeMin: {x: 256, y: 128}
 --- !u!114 &114407993730467918
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3001,12 +3001,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a2824f42a51524d9b78f76c9145938, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_logViewHistoryMax: 64
-  m_obeliskLogPrefab: {fileID: 114459954850255048, guid: 1727b4d50e9a06b4a84d090e5e7918c7,
+  _logViewHistoryMax: 64
+  _obeliskLogPrefab: {fileID: 114459954850255048, guid: 1727b4d50e9a06b4a84d090e5e7918c7,
     type: 2}
-  m_obeliskStackTracePrefab: {fileID: 114815834410703390, guid: 2685c9718d8862748b6489f0993f444f,
+  _obeliskStackTracePrefab: {fileID: 114815834410703390, guid: 2685c9718d8862748b6489f0993f444f,
     type: 2}
-  m_colorSet: {fileID: 11400000, guid: 4cebb4abdbba0e84da1b16c23a8bf626, type: 2}
+  _colorSet: {fileID: 11400000, guid: 4cebb4abdbba0e84da1b16c23a8bf626, type: 2}
 --- !u!114 &114946839663599248
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -8,7 +8,7 @@ namespace HUDConsole {
 		public bool customColor { get; private set; }
 		public Color textColor { get; private set; }
 		public Color bgColor { get; private set; }
-		
+
 		public ConsoleLog(string logString, string stackTrace, LogType logType, bool customColor, Color textColor, Color bgColor) : this() {
 			this.logString = logString;
 			this.stackTrace = stackTrace;

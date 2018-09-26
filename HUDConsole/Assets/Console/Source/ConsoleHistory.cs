@@ -6,36 +6,36 @@ namespace HUDConsole {
 	[CreateAssetMenu(menuName = "Console/Console History Asset", fileName = "ConsoleHistory")]
 	public class ConsoleHistory : ScriptableObject {
 #region Public
-	#region Command
+#region Command
 		public void CommandHistoryAdd(string commandString) {
-			if(m_commandHistory.Count >= m_commandHistoryMax) {
-				m_commandHistory.RemoveAt(0);
+			if (_commandHistory.Count >= _commandHistoryMax) {
+				_commandHistory.RemoveAt(0);
 			}
 
-			m_commandHistory.Add(commandString);
+			_commandHistory.Add(commandString);
 		}
 
 		public string CommandHistoryGet(int index) {
-			return m_commandHistory[index];
+			return _commandHistory[index];
 		}
 
 		public int CommandHistoryCount() {
-			return m_commandHistory.Count;
+			return _commandHistory.Count;
 		}
-	#endregion Command
+#endregion Command
 
-	#region Log
+#region Log
 		public void LogAdd(ConsoleLog consoleLog) {
-			m_logHistory.Add(consoleLog);
+			_logHistory.Add(consoleLog);
 			logHistoryChanged();
 		}
 
 		public ConsoleLog LogGetLatest() {
-			return m_logHistory[m_logHistory.Count - 1];
+			return _logHistory[_logHistory.Count - 1];
 		}
 
 		public List<ConsoleLog> LogGetAll() {
-			return m_logHistory;
+			return _logHistory;
 		}
 
 		public void LogAddListener(Action callback) {
@@ -45,19 +45,21 @@ namespace HUDConsole {
 		public void LogRemoveListener(Action callback) {
 			logHistoryChanged -= callback;
 		}
-	#endregion Log
+#endregion Log
 #endregion Public
 
 #region Private
-	#region Command
-		[SerializeField] private int m_commandHistoryMax = 32;
-		private List<string> m_commandHistory = new List<string>();
-	#endregion Command
+#region Command
+		[SerializeField]
+		private int _commandHistoryMax = 32;
 
-	#region Log
+		private List<string> _commandHistory = new List<string>();
+#endregion Command
+
+#region Log
 		private Action logHistoryChanged;
-		private List<ConsoleLog> m_logHistory = new List<ConsoleLog>(); 
-	#endregion Log
+		private List<ConsoleLog> _logHistory = new List<ConsoleLog>();
+#endregion Log
 #endregion Private
 	}
 }

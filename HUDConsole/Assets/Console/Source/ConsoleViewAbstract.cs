@@ -5,9 +5,7 @@ namespace HUDConsole {
 #region Public
 		public abstract bool IsActive { get; protected set; }
 
-		public virtual void ClearConsoleView() {
-
-		}
+		public virtual void ClearConsoleView() { }
 #endregion Public
 
 #region Private
@@ -19,9 +17,7 @@ namespace HUDConsole {
 			Console.ConsoleHistory.LogRemoveListener(OnConsoleLogHistoryChanged);
 		}
 
-		protected virtual void OnConsoleLogHistoryChanged() {
-			
-		}
+		protected virtual void OnConsoleLogHistoryChanged() { }
 #endregion Private
 	}
 }

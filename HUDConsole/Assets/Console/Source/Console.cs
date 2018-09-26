@@ -4,21 +4,22 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace HUDConsole {
 	public class Console : MonoBehaviour {
 #region Public
 		public static bool IsActive {
-			get { return m_instance != null && m_instance.m_consoleView.IsActive; }
+			get { return _instance != null && _instance._consoleView.IsActive; }
 		}
 
 		public static ConsoleHistory ConsoleHistory {
-			get { return m_instance.m_consoleHistory; }
+			get { return _instance._consoleHistory; }
 		}
 
 		public static void AddCommand(string commandName, CommandHandler handler, string helpText) {
-			m_commands.Add(commandName.ToLowerInvariant(), new ConsoleCommand(commandName, handler, helpText));
+			_commands.Add(commandName.ToLowerInvariant(), new ConsoleCommand(commandName, handler, helpText));
 		}
 
 		public static void ExecuteCommand(string command) {
@@ -50,7 +51,7 @@ namespace HUDConsole {
 		}
 
 		public static List<ConsoleCommand> GetOrderedCommands() {
-			return m_commands.Values.OrderBy(c => c.commandName).ToList();
+			return _commands.Values.OrderBy(c => c.commandName).ToList();
 		}
 
 		public static List<ConsoleLog> GetHistoryConsoleLogs() {
@@ -61,30 +62,29 @@ namespace HUDConsole {
 			List<ConsoleLog> history = GetHistoryConsoleLogs();
 			StringBuilder stringBuilder = new StringBuilder();
 
-			foreach(ConsoleLog log in history) {
+			foreach (ConsoleLog log in history) {
 				stringBuilder.AppendLine(log.logString.Trim());
-				if(log.stackTrace != "") { stringBuilder.AppendLine(log.stackTrace.Trim()); }
+				if (log.stackTrace != "") { stringBuilder.AppendLine(log.stackTrace.Trim()); }
+
 				stringBuilder.Append(Environment.NewLine);
 			}
 
-			return(stripRichText ? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty) : stringBuilder.ToString()).Trim();
+			return (stripRichText ? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty) : stringBuilder.ToString()).Trim();
 		}
 
 		/// <summary>Save console history to a log file and return the file's path.</summary>
 		public static string SaveHistoryToLogFile(string path = "", string prefix = "console", bool stripRichText = false) {
 			path = path.Trim();
 
-			if(path == string.Empty) {
+			if (path == string.Empty) {
 				path = Application.persistentDataPath;
-			}
-			else if(path.EndsWith(":")) {
+			} else if (path.EndsWith(":")) {
 				path += "\\";
-			}
-			else if(path.EndsWith("/")) {
+			} else if (path.EndsWith("/")) {
 				path = path.Replace("/", "\\");
 			}
 
-			if(m_isDrivePath.IsMatch(path)) {
+			if (_isDrivePath.IsMatch(path)) {
 				if (Directory.GetLogicalDrives().All(drive => !drive.Equals(path, StringComparison.CurrentCultureIgnoreCase))) {
 					LogError(string.Format("Drive not found: {0}", path));
 
@@ -92,15 +92,13 @@ namespace HUDConsole {
 				}
 
 				path = string.Format("{0}:", path[0]);
-			}
-			else if(Directory.Exists(Path.GetDirectoryName(path)) == false) {
+			} else if (Directory.Exists(Path.GetDirectoryName(path)) == false) {
 				LogError(string.Format("Directory not found: {0}", path));
 
 				throw new Exception("Directory not found");
 			}
 
 			path = string.Format("{0}/{1}_{2:yyyy-MM-dd_HH-mm-ss}.log", path, prefix, DateTime.Now);
-
 			File.WriteAllText(path, GetHistoryString(stripRichText));
 
 			return path.Replace("\\", "/");
@@ -112,68 +110,72 @@ namespace HUDConsole {
 		}
 
 		public static void ClearConsoleView() {
-			m_instance.m_consoleView.ClearConsoleView();
+			_instance._consoleView.ClearConsoleView();
 		}
 
 		public static void SetHelpTextFormat(string helpTextFormat) {
-			m_helpTextFormat = helpTextFormat;
+			_helpTextFormat = helpTextFormat;
 		}
 
 		public static void PrintHelpText() {
-			foreach (var command in m_commands.Values.OrderBy(c => c.commandName)) {
-				Log(string.Format(m_helpTextFormat, command.commandName, command.helpText), LogType.Log, false);
+			foreach (var command in _commands.Values.OrderBy(c => c.commandName)) {
+				Log(string.Format(_helpTextFormat, command.commandName, command.helpText), LogType.Log, false);
 			}
 		}
 #endregion Public
 
 #region Private
-		private static Console m_instance = null;
+		private static Console _instance = null;
 
-		private static string m_helpTextFormat = "{0} : {1}";
+		private static string _helpTextFormat = "{0} : {1}";
 
 		/// <summary>Tests whether a string is a drive root. e.g. "D:\"</summary>
-		const string m_regexDrivePath = @"^\w:(?:\\|\/)?$";
+		const string _regexDrivePath = @"^\w:(?:\\|\/)?$";
+
 		/// <summary>Tests whether a string is a drive root. e.g. "D:\"</summary>
-		static readonly Regex m_isDrivePath = new Regex(m_regexDrivePath);
+		static readonly Regex _isDrivePath = new Regex(_regexDrivePath);
 
 		[Header("History")]
-		[SerializeField] private ConsoleHistory m_consoleHistory;
+		[SerializeField] private ConsoleHistory _consoleHistory;
 
 		[Header("Default Commands")]
-		[SerializeField] private bool m_enableDefaultCommands = true;
+		[SerializeField] private bool _enableDefaultCommands = true;
 
 		[Header("Unity Log Settings")]
-		[SerializeField] private bool m_logUnityErrors = true;
-		[SerializeField] private bool m_logUnityAsserts = true;
-		[SerializeField] private bool m_logUnityWarnings = true;
-		[SerializeField] private bool m_logUnityLogs = true;
-		[SerializeField] private bool m_logUnityExceptions = true;
+		[SerializeField] private bool _logUnityErrors = true;
+
+		[SerializeField] private bool _logUnityAsserts = true;
+
+		[SerializeField] private bool _logUnityWarnings = true;
+
+		[SerializeField] private bool _logUnityLogs = true;
+
+		[SerializeField] private bool _logUnityExceptions = true;
 
 		[Header("Console View")]
 		[Tooltip("Select which console view implementation to use.")]
-		[SerializeField] private ConsoleViewAbstract m_consoleViewPrefab;
-		private ConsoleViewAbstract m_consoleView;
+		[SerializeField] private ConsoleViewAbstract _consoleViewPrefab;
+
+		private ConsoleViewAbstract _consoleView;
 
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-		private static void InstantiateConsole()
-		{
+		private static void InstantiateConsole() {
 			Instantiate(Resources.Load("Console"));
 		}
 
 		private void Awake() {
-			if(m_instance == null) {
-				m_instance = this;
-			}
-			else {
+			if (_instance == null) {
+				_instance = this;
+			} else {
 				Debug.LogError("Two instances of ConsoleController detected.");
 				Destroy(gameObject);
 			}
 
 			// Instantiate view.
-			m_consoleView = Instantiate(m_consoleViewPrefab);
-			m_consoleView.transform.SetParent(transform, false);
+			_consoleView = Instantiate(_consoleViewPrefab);
+			_consoleView.transform.SetParent(transform, false);
 
-			if(m_enableDefaultCommands == false) { return; }
+			if (_enableDefaultCommands == false) { return; }
 
 			// Add core commands.
 			AddCommand("Echo", ConsoleCoreCommands.Echo, "Display message to console.");
@@ -195,15 +197,17 @@ namespace HUDConsole {
 			UnityLogsStart();
 		}
 
-	#region Commands
-		private static Dictionary<string, ConsoleCommand> m_commands = new Dictionary<string, ConsoleCommand>();
+#region Commands
+		private static Dictionary<string, ConsoleCommand> _commands = new Dictionary<string, ConsoleCommand>();
 
 		/// <summary>Splits a string by spaces, unless surrounded by (unescaped) single or double quotes.</summary>
-		const string m_regexStringSplit = @"(""[^""\\]*(?:\\.[^""\\]*)*""|'[^'\\]*(?:\\.[^'\\]*)*'|[\S]+)+";
+		const string _regexStringSplit = @"(""[^""\\]*(?:\\.[^""\\]*)*""|'[^'\\]*(?:\\.[^'\\]*)*'|[\S]+)+";
+
 		/// <summary>Tests whether a string starts and ends with either double or single quotes (not a mix).</summary>
-		const string m_regexQuoteWrapped = @"^"".*""$|^'.*'$";
+		const string _regexQuoteWrapped = @"^"".*""$|^'.*'$";
+
 		/// <summary>Tests whether a string starts and ends with either double or single quotes (not a mix).</summary>
-		static readonly Regex m_isWrappedInQuotes = new Regex(m_regexQuoteWrapped);
+		static readonly Regex _isWrappedInQuotes = new Regex(_regexQuoteWrapped);
 
 		private static void ParseCommand(string commandString) {
 			ConsoleHistory.CommandHistoryAdd(commandString);
@@ -219,35 +223,33 @@ namespace HUDConsole {
 			ConsoleHistory.LogAdd(newLog);
 
 			try {
-				m_commands[cmdName].handler(cmdSplit.ToArray());
+				_commands[cmdName].handler(cmdSplit.ToArray());
 			}
-			catch(KeyNotFoundException) {
+			catch (KeyNotFoundException) {
 				LogError(String.Format("Command \"{0}\" not found.", cmdName));
 			}
-			catch(Exception) {
-
-			}
+			catch (Exception) { }
 		}
 
-		static List<string> ParseArguments(string commandString) {
-			List<string> args = new List<string>();
+		private static List<string> ParseArguments(string commandString) {
+			var args = new List<string>();
 
-			foreach(Match match in Regex.Matches(commandString, m_regexStringSplit)) {
+			foreach (Match match in Regex.Matches(commandString, _regexStringSplit)) {
 				string value = match.Value.Trim();
 
-				if(m_isWrappedInQuotes.IsMatch(value)) { value = value.Substring(1, value.Length - 2); }
+				if (_isWrappedInQuotes.IsMatch(value)) { value = value.Substring(1, value.Length - 2); }
 
 				args.Add(value);
 			}
 
 			return args;
 		}
-	#endregion Commands
+#endregion Commands
 
-	#region Logs
+#region Logs
 		private static void CreateLog(string logString, LogType logType, bool doStackTrace, bool customColor, Color textColor, Color bgColor) {
 			var stackTrace = "";
-			if(doStackTrace) {
+			if (doStackTrace) {
 				stackTrace = new System.Diagnostics.StackTrace().ToString();
 			}
 
@@ -259,48 +261,53 @@ namespace HUDConsole {
 			var newLog = new ConsoleLog(logString, stackTrace, logType, false, Color.white, Color.black);
 			ConsoleHistory.LogAdd(newLog);
 		}
-	#endregion Logs
+#endregion Logs
 
-	#region UnityLogs
+#region UnityLogs
 		private void UnityLogsStart() {
 			Application.logMessageReceived += HandleUnityLog;
 		}
 
 		private void HandleUnityLog(string logString, string stackTrace, LogType logType) {
-			switch(logType) {
+			switch (logType) {
 				case LogType.Error: {
-					if(m_logUnityErrors) {
+					if (_logUnityErrors) {
 						CreateLog(logString, stackTrace, logType);
 					}
+
 					break;
 				}
 				case LogType.Assert: {
-					if(m_logUnityAsserts) {
+					if (_logUnityAsserts) {
 						CreateLog(logString, stackTrace, logType);
 					}
+
 					break;
 				}
 				case LogType.Warning: {
-					if(m_logUnityWarnings) {
+					if (_logUnityWarnings) {
 						CreateLog(logString, stackTrace, logType);
 					}
+
 					break;
 				}
 				case LogType.Log: {
-					if(m_logUnityLogs) {
+					if (_logUnityLogs) {
 						CreateLog(logString, stackTrace, logType);
 					}
+
 					break;
 				}
 				case LogType.Exception: {
-					if(m_logUnityExceptions) {
+					if (_logUnityExceptions) {
 						CreateLog(logString, stackTrace, logType);
 					}
+
 					break;
 				}
 			}
 		}
-	#endregion UnityLogs
+#endregion UnityLogs
 #endregion Private
 	}
 }

@@ -5,7 +5,7 @@ namespace HUDConsole {
 #region Console
 		public static void Echo(string[] args) {
 			string output = "";
-			for(int i = 0; i < args.Length; i++) {
+			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
 
@@ -14,7 +14,7 @@ namespace HUDConsole {
 
 		public static void ConsoleLog(string[] args) {
 			string output = "";
-			for(int i = 0; i < args.Length; i++) {
+			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
 
@@ -23,7 +23,7 @@ namespace HUDConsole {
 
 		public static void ConsoleLogWarning(string[] args) {
 			string output = "";
-			for(int i = 0; i < args.Length; i++) {
+			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
 
@@ -32,7 +32,7 @@ namespace HUDConsole {
 
 		public static void ConsoleLogError(string[] args) {
 			string output = "";
-			for(int i = 0; i < args.Length; i++) {
+			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
 
@@ -59,7 +59,7 @@ namespace HUDConsole {
 #region Debug
 		public static void DebugLog(string[] args) {
 			string output = "";
-			for(int i = 0; i < args.Length; i++) {
+			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
 
@@ -68,7 +68,7 @@ namespace HUDConsole {
 
 		public static void DebugLogWarning(string[] args) {
 			string output = "";
-			for(int i = 0; i < args.Length; i++) {
+			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
 
@@ -77,7 +77,7 @@ namespace HUDConsole {
 
 		public static void DebugLogError(string[] args) {
 			string output = "";
-			for(int i = 0; i < args.Length; i++) {
+			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
 

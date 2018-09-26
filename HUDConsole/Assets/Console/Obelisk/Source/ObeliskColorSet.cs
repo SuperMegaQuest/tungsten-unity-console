@@ -6,125 +6,137 @@ namespace HUDConsole {
 	public class ObeliskColorSet : ScriptableObject {
 #region Public
 		// General.
-		public Color iconBackgroundColor {
-			get { return m_iconBackgroundColor; }
+		public Color IconBackgroundColor {
+			get { return _iconBackgroundColor; }
 		}
-		public Color iconColor {
-			get { return m_iconColor; }
+
+		public Color IconColor {
+			get { return _iconColor; }
 		}
-		public Color iconDisabledColor{
-			get { return m_iconDisabledColor; }
+
+		public Color IconDisabledColor {
+			get { return _iconDisabledColor; }
 		}
-		public Color buttonColor {
-			get { return m_buttonColor; }
+
+		public Color ButtonColor {
+			get { return _buttonColor; }
 		}
-		public Color stackTraceTextColor {
-			get { return m_stackTraceTextColor; }
+
+		public Color StackTraceTextColor {
+			get { return _stackTraceTextColor; }
 		}
 
 		// Main.
-		public Color backgroundColor {
-			get { return m_backgroundColor; }
+		public Color BackgroundColor {
+			get { return _backgroundColor; }
 		}
-		public Color outlineColor {
-			get { return m_outlineColor; }
+
+		public Color OutlineColor {
+			get { return _outlineColor; }
 		}
 
 		// Titlebar.
-		public Color titlebarBackgroundColor {
-			get { return m_titlebarBackgroundColor; }
+		public Color TitlebarBackgroundColor {
+			get { return _titlebarBackgroundColor; }
 		}
-		public Color titlebarTextColor {
-			get { return m_titlebarTextColor; }
+
+		public Color TitlebarTextColor {
+			get { return _titlebarTextColor; }
 		}
 
 		// Scrollbar.
-		public Color scrollbarBackgroundColor {
-			get { return m_scrollbarBackgroundColor; }
+		public Color ScrollbarBackgroundColor {
+			get { return _scrollbarBackgroundColor; }
 		}
-		public Color scrollbarSliderColor {
-			get { return m_scrollbarSliderColor; }
+
+		public Color ScrollbarSliderColor {
+			get { return _scrollbarSliderColor; }
 		}
-		public Color scrollbarSliderHighlightedColor { 
-			get { return m_scrollbarSliderHighlightedColor; }
+
+		public Color ScrollbarSliderHighlightedColor {
+			get { return _scrollbarSliderHighlightedColor; }
 		}
-		public Color scrollbarSliderPressedColor {
-			get { return m_scrollbarSliderPressedColor; }
+
+		public Color ScrollbarSliderPressedColor {
+			get { return _scrollbarSliderPressedColor; }
 		}
 
 		// Input.
-		public Color inputContainerBackgroundColor {
-			get { return m_inputContainerBackgroundColor; }
+		public Color InputContainerBackgroundColor {
+			get { return _inputContainerBackgroundColor; }
 		}
-		public Color inputTextColor {
-			get { return m_inputTextColor; }
+
+		public Color InputTextColor {
+			get { return _inputTextColor; }
 		}
 
 		// Text.
 		public Color LogTextColor(LogType logType) {
-			return m_logTextColor[logType];
+			return _logTextColor[logType];
 		}
 
 		public Color LogBackgroundColor(LogType logType) {
-			return m_logBackgroundColor[logType];
+			return _logBackgroundColor[logType];
 		}
 #endregion Public
 
 #region Private
 		[Header("General")]
-		[SerializeField] private Color m_iconBackgroundColor;
-		[SerializeField] private Color m_iconColor;
-		[SerializeField] private Color m_iconDisabledColor;
-		[SerializeField] private Color m_buttonColor;
-		[SerializeField] private Color m_stackTraceTextColor;
+		[SerializeField] private Color _iconBackgroundColor;
+		[SerializeField] private Color _iconColor;
+		[SerializeField] private Color _iconDisabledColor;
+		[SerializeField] private Color _buttonColor;
+		[SerializeField] private Color _stackTraceTextColor;
 
 		[Header("Main")]
-		[SerializeField] private Color m_backgroundColor;
-		[SerializeField] private Color m_outlineColor;
+		[SerializeField] private Color _backgroundColor;
+		[SerializeField] private Color _outlineColor;
 
 		[Header("Titlebar")]
-		[SerializeField] private Color m_titlebarBackgroundColor;
-		[SerializeField] private Color m_titlebarTextColor;
+		[SerializeField] private Color _titlebarBackgroundColor;
+		[SerializeField] private Color _titlebarTextColor;
 
 		[Header("Scrollbar")]
-		[SerializeField] private Color m_scrollbarBackgroundColor;
-		[SerializeField] private Color m_scrollbarSliderColor;
-		[SerializeField] private Color m_scrollbarSliderHighlightedColor;
-		[SerializeField] private Color m_scrollbarSliderPressedColor;
+		[SerializeField] private Color _scrollbarBackgroundColor;
+		[SerializeField] private Color _scrollbarSliderColor;
+		[SerializeField] private Color _scrollbarSliderHighlightedColor;
+		[SerializeField] private Color _scrollbarSliderPressedColor;
 
 		[Header("Input")]
-		[SerializeField] private Color m_inputContainerBackgroundColor;
-		[SerializeField] private Color m_inputTextColor;
+		[SerializeField] private Color _inputContainerBackgroundColor;
+		[SerializeField] private Color _inputTextColor;
 
 		[Header("Log Text")]
-		[SerializeField] private Color m_logTextErrorColor;
-		[SerializeField] private Color m_logTextAssertColor;
-		[SerializeField] private Color m_logTextWarningColor;
-		[SerializeField] private Color m_logTextLogColor;
-		[SerializeField] private Color m_logTextExceptionColor;
+		[SerializeField] private Color _logTextErrorColor;
+		[SerializeField] private Color _logTextAssertColor;
+		[SerializeField] private Color _logTextWarningColor;
+		[SerializeField] private Color _logTextLogColor;
+		[SerializeField] private Color _logTextExceptionColor;
 
 		[Header("Log Background")]
-		[SerializeField] private Color m_logBackgroundErrorColor;
-		[SerializeField] private Color m_logBackgroundAssertColor;
-		[SerializeField] private Color m_logBackgroundWarningColor;
-		[SerializeField] private Color m_logBackgroundLogColor;
-		[SerializeField] private Color m_logBackgroundExceptionColor;
+		[SerializeField]
+		private Color _logBackgroundErrorColor;
 
-		private Dictionary<LogType, Color> m_logTextColor = new Dictionary<LogType, Color>();
-		private Dictionary<LogType, Color> m_logBackgroundColor = new Dictionary<LogType, Color>();
+		[SerializeField] private Color _logBackgroundAssertColor;
+		[SerializeField] private Color _logBackgroundWarningColor;
+		[SerializeField] private Color _logBackgroundLogColor;
+		[SerializeField] private Color _logBackgroundExceptionColor;
+
+		private Dictionary<LogType, Color> _logTextColor = new Dictionary<LogType, Color>();
+		private Dictionary<LogType, Color> _logBackgroundColor = new Dictionary<LogType, Color>();
 
 		private void Awake() {
-			m_logTextColor.Add(LogType.Error, m_logTextErrorColor);
-			m_logTextColor.Add(LogType.Assert, m_logTextAssertColor);
-			m_logTextColor.Add(LogType.Warning, m_logTextWarningColor);
-			m_logTextColor.Add(LogType.Log, m_logTextLogColor);
-			m_logTextColor.Add(LogType.Exception, m_logTextExceptionColor);
+			_logTextColor.Add(LogType.Error, _logTextErrorColor);
+			_logTextColor.Add(LogType.Assert, _logTextAssertColor);
+			_logTextColor.Add(LogType.Warning, _logTextWarningColor);
+			_logTextColor.Add(LogType.Log, _logTextLogColor);
+			_logTextColor.Add(LogType.Exception, _logTextExceptionColor);
 
-			m_logBackgroundColor.Add(LogType.Error, m_logBackgroundErrorColor);
-			m_logBackgroundColor.Add(LogType.Assert, m_logBackgroundAssertColor);
-			m_logBackgroundColor.Add(LogType.Warning, m_logBackgroundWarningColor);
-			m_logBackgroundColor.Add(LogType.Log, m_logBackgroundLogColor);
-			m_logBackgroundColor.Add(LogType.Exception, m_logBackgroundExceptionColor);
+			_logBackgroundColor.Add(LogType.Error, _logBackgroundErrorColor);
+			_logBackgroundColor.Add(LogType.Assert, _logBackgroundAssertColor);
+			_logBackgroundColor.Add(LogType.Warning, _logBackgroundWarningColor);
+			_logBackgroundColor.Add(LogType.Log, _logBackgroundLogColor);
+			_logBackgroundColor.Add(LogType.Exception, _logBackgroundExceptionColor);
 		}
 #endregion Private
 	}
