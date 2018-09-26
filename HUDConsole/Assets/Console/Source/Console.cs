@@ -143,13 +143,9 @@ namespace HUDConsole {
 
 		[Header("Unity Log Settings")]
 		[SerializeField] private bool _logUnityErrors = true;
-
 		[SerializeField] private bool _logUnityAsserts = true;
-
 		[SerializeField] private bool _logUnityWarnings = true;
-
 		[SerializeField] private bool _logUnityLogs = true;
-
 		[SerializeField] private bool _logUnityExceptions = true;
 
 		[Header("Console View")]
@@ -175,10 +171,11 @@ namespace HUDConsole {
 			_consoleView = Instantiate(_consoleViewPrefab);
 			_consoleView.transform.SetParent(transform, false);
 
-			if (_enableDefaultCommands == false) { return; }
+			if (_enableDefaultCommands == false) {
+				return;
+			}
 
 			// Add core commands.
-			AddCommand("Echo", ConsoleCoreCommands.Echo, "Display message to console.");
 			AddCommand("Console.Log", ConsoleCoreCommands.ConsoleLog, "Display message to console.");
 			AddCommand("Console.LogWarning", ConsoleCoreCommands.ConsoleLogWarning, "Display warning message to console.");
 			AddCommand("Console.LogError", ConsoleCoreCommands.ConsoleLogError, "Display error message to console.");

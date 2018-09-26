@@ -3,15 +3,6 @@ using UnityEngine;
 namespace HUDConsole {
 	public class ConsoleCoreCommands {
 #region Console
-		public static void Echo(string[] args) {
-			string output = "";
-			for (int i = 0, n = args.Length; i < n; i++) {
-				output += args[i] + " ";
-			}
-
-			Console.Log(output);
-		}
-
 		public static void ConsoleLog(string[] args) {
 			string output = "";
 			for (int i = 0, n = args.Length; i < n; i++) {

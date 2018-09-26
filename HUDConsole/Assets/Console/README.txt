@@ -9,7 +9,7 @@
 ----- ----- ----- -----
 Adding HUD Console to your project.
 ----- ----- ----- -----
-	To add the console to your project simply drag Console/Console into your scene.
+	To add the console to your project import this into your Unity project, the console will self instantiate at runtime.
 	The console can be opened by pressing Grave '`' (The key above tab).
 
 ----- ----- ----- -----
@@ -60,8 +60,8 @@ Built in commands.
 	The built in commands can be found in Console/Scripts/ConsoleCoreCommands.cs,
 	and are added to the console in Console/Scripts/Console line 91.
 
-	As everyone's requirements of a console would range quite considerably
-	I have purposefully only included a handful of commands, however I plan on adding more later.
+	As everyone's requirements of a console would range quite considerably-
+	-I have purposefully only included a handful of commands, however I plan on adding more later.
 
 ----- ----- ----- -----
 Creating new Color Sets.

@@ -1,1 +1,12 @@
-HUDConsole 1.0
+----- ----- ----- -----
+HUDConsole 1.1.0 | 2018/09/26
+----- ----- ----- -----
+    * Console now self instantiates.
+    * Adjusted code style / formatting.
+    * The default console view Obelisk no longer uses `transform.find` to get it's components, it's all from serialized properties now.
+    * Removed `Echo` command from ConsoleCoreCommands, not really any point to it.
+
+----- ----- ----- -----
+HUDConsole 1.0 | 2018/02/17
+----- ----- ----- -----
+    * Initial release!
