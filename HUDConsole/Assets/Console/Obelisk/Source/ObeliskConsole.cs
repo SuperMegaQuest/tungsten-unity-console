@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -33,54 +34,53 @@ namespace HUDConsole {
 #region Private
 		private static ObeliskConsole _instance = null;
 
-		// Main.
-		private RectTransform _container;
-		private ListenForDimensionsChange _containerListener;
-		private Transform _obeliskLogPoolContainer;
-		private Image _containerBackgroundImage;
-		private Outline _outline;
-		private Image _resizeHandleImage;
+		[Header("Main")]
+		[SerializeField] private RectTransform _container;
+		[SerializeField] private ListenForDimensionsChange _containerListener;
+		[SerializeField] private Transform _obeliskLogPoolContainer;
+		[SerializeField] private Image _containerBackgroundImage;
+		[SerializeField] private Outline _outline;
+		[SerializeField] private Image _resizeHandleImage;
 
-		// Titlebar.
-		private Image _titlebarBackgroundImage;
-		private Image _titlebarIconImage;
-		private Text _titlebarTitleText;
-		private Button _closeButton;
-		private Image _closeButtonBackgroundImage;
-		private Image _closeButtonIconImage;
+		[Header("Titlebar")]
+		[SerializeField] private Image _titlebarBackgroundImage;
+		[SerializeField] private Image _titlebarIconImage;
+		[SerializeField] private Text _titlebarTitleText;
+		[SerializeField] private Button _closeButton;
+		[SerializeField] private Image _closeButtonBackgroundImage;
+		[SerializeField] private Image _closeButtonIconImage;
 
-		// Filter.
-		private ObeliskFilterDropdown _filterDropdown;
+		[Header("Filter")]
+		[SerializeField] private ObeliskFilterDropdown _filterDropdown;
 
-		// Log.
-		private ScrollRect _scrollRect;
-		private RectTransform _logLayout;
-		private Scrollbar _scrollbar;
-		private Image _scrollbarBackgroundImage;
+		[Header("Log")]
+		[SerializeField] private ScrollRect _scrollRect;
+		[SerializeField] private RectTransform _logLayout;
+		[SerializeField] private Scrollbar _scrollbar;
+		[SerializeField] private Image _scrollbarBackgroundImage;
 
-		// Input.
-		private Image _inputContainerBackgroundImage;
+		[Header("Input")]
+		[SerializeField] private Image _inputContainerBackgroundImage;
 
-		// Command.
-		private RectTransform _commandContainer;
-		private Image _commandSymbolBackgroundImage;
-		private Image _commandSymbolImage;
-		private InputField _commandInputField;
-		private Image _commandInputFieldImage;
-		private Text _commandInputFieldText;
+		[Header("Command")]
+		[SerializeField] private RectTransform _commandContainer;
+		[SerializeField] private Image _commandSymbolBackgroundImage;
+		[SerializeField] private Image _commandSymbolImage;
+		[SerializeField] private InputField _commandInputField;
+		[SerializeField] private Image _commandInputFieldImage;
+		[SerializeField] private Text _commandInputFieldText;
 
-		// Search.
-		private RectTransform _searchContainer;
-		private Image _searchSymbolBackgroundImage;
-		private Image _searchSymbolImage;
-		private InputField _searchInputField;
-		private Image _searchInputFieldImage;
-		private Text _searchInputFieldText;
+		[Header("Search")]
+		[SerializeField] private RectTransform _searchContainer;
+		[SerializeField] private Image _searchSymbolBackgroundImage;
+		[SerializeField] private Image _searchSymbolImage;
+		[SerializeField] private InputField _searchInputField;
+		[SerializeField] private Image _searchInputFieldImage;
+		[SerializeField] private Text _searchInputFieldText;
 
 		private List<ObeliskLog> _logViewHistory = new List<ObeliskLog>();
 
-		[SerializeField]
-		private int _logViewHistoryMax = 64;
+		[SerializeField] private int _logViewHistoryMax = 64;
 
 		private Queue<ObeliskLog> _obeliskLogPool = new Queue<ObeliskLog>();
 
@@ -107,7 +107,7 @@ namespace HUDConsole {
 
 			ColorSet = Instantiate(_colorSet);
 
-			GetComponents();
+			SetupComponents();
 			LogAwake();
 			ApplyColorSet();
 		}
@@ -127,54 +127,18 @@ namespace HUDConsole {
 			ResizeInputContainers();
 		}
 
-		private void GetComponents() {
+		private void SetupComponents() {
 			// Main.
-			_container = transform.Find("Container").GetComponent<RectTransform>();
-			_containerListener = _container.GetComponent<ListenForDimensionsChange>();
-			_obeliskLogPoolContainer = transform.Find("Container/LogPool");
 			_containerListener.SubscribeToDimensionsChange(OnContainerRectTransformDimensionsChange);
-			_containerBackgroundImage = _container.GetComponent<Image>();
-			_outline = _container.GetComponent<Outline>();
-			_resizeHandleImage = transform.Find("Container/Input/Search/ResizeHandle/Image").GetComponent<Image>();
 
 			// Titlebar.
-			_titlebarBackgroundImage = transform.Find("Container/Titlebar").GetComponent<Image>();
-			_titlebarIconImage = transform.Find("Container/Titlebar/Icon").GetComponent<Image>();
-			_titlebarTitleText = transform.Find("Container/Titlebar/Title").GetComponent<Text>();
-			_closeButton = transform.Find("Container/Titlebar/Menu/Close").GetComponent<Button>();
 			_closeButton.onClick.AddListener(delegate { CloseButtonHandler(_closeButton); });
-			_closeButtonBackgroundImage = transform.Find("Container/Titlebar/Menu/Close").GetComponent<Image>();
-			_closeButtonIconImage = transform.Find("Container/Titlebar/Menu/Close/Image").GetComponent<Image>();
 
 			// Filter.
-			_filterDropdown = transform.Find("Container/Titlebar/Menu/Filter").GetComponent<ObeliskFilterDropdown>();
 			_filterDropdown.SubscribeToFilterChanges(FilterUpdated);
 
-			// Log.
-			_scrollRect = transform.Find("Container/Log").GetComponent<ScrollRect>();
-			_logLayout = transform.Find("Container/Log/LogLayout").GetComponent<RectTransform>();
-			_scrollbar = transform.Find("Container/Log/Scrollbar").GetComponent<Scrollbar>();
-			_scrollbarBackgroundImage = transform.Find("Container/Log/Scrollbar").GetComponent<Image>();
-
-			// Input container.
-			_inputContainerBackgroundImage = transform.Find("Container/Input").GetComponent<Image>();
-			_commandContainer = transform.Find("Container/Input/Command").GetComponent<RectTransform>();
-			_searchContainer = transform.Find("Container/Input/Search").GetComponent<RectTransform>();
-
-			// Command.
-			_commandSymbolBackgroundImage = transform.Find("Container/Input/Command/Symbol").GetComponent<Image>();
-			_commandSymbolImage = transform.Find("Container/Input/Command/Symbol/Image").GetComponent<Image>();
-			_commandInputField = transform.Find("Container/Input/Command/InputField").GetComponent<InputField>();
-			_commandInputFieldImage = transform.Find("Container/Input/Command/InputField").GetComponent<Image>();
-			_commandInputFieldText = transform.Find("Container/Input/Command/InputField/Text").GetComponent<Text>();
-
 			// Search.
-			_searchSymbolBackgroundImage = transform.Find("Container/Input/Search/Symbol").GetComponent<Image>();
-			_searchSymbolImage = transform.Find("Container/Input/Search/Symbol/Image").GetComponent<Image>();
-			_searchInputField = transform.Find("Container/Input/Search/InputField").GetComponent<InputField>();
 			_searchInputField.onValueChanged.AddListener(delegate { SearchInputFieldUpdated(_searchInputField); });
-			_searchInputFieldImage = transform.Find("Container/Input/Search/InputField").GetComponent<Image>();
-			_searchInputFieldText = transform.Find("Container/Input/Search/InputField/Text").GetComponent<Text>();
 		}
 
 #region State
@@ -257,7 +221,7 @@ namespace HUDConsole {
 			float newHeight = 0.0f;
 
 			// Resize LogLayout so it can properly contain all the logs.
-			for (var i = 0; i < _logViewHistory.Count; i++) {
+			for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
 				newHeight += _logViewHistory[i].RectTransform.sizeDelta.y;
 			}
 

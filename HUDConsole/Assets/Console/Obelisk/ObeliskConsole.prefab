@@ -3001,6 +3001,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a2824f42a51524d9b78f76c9145938, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _container: {fileID: 224492747251803400}
+  _containerListener: {fileID: 114539048691606374}
+  _obeliskLogPoolContainer: {fileID: 224695956235711378}
+  _containerBackgroundImage: {fileID: 114626083654977808}
+  _outline: {fileID: 114789529542733322}
+  _resizeHandleImage: {fileID: 114917442224158824}
+  _titlebarBackgroundImage: {fileID: 114742926460094938}
+  _titlebarIconImage: {fileID: 114692340703772278}
+  _titlebarTitleText: {fileID: 114292562756579950}
+  _closeButton: {fileID: 114899142098130752}
+  _closeButtonBackgroundImage: {fileID: 114069410599272548}
+  _closeButtonIconImage: {fileID: 114337400443592766}
+  _filterDropdown: {fileID: 114533126257427182}
+  _scrollRect: {fileID: 114715476573042336}
+  _logLayout: {fileID: 224956650474811724}
+  _scrollbar: {fileID: 114401389011859314}
+  _scrollbarBackgroundImage: {fileID: 114686909367488208}
+  _inputContainerBackgroundImage: {fileID: 114807746485210466}
+  _commandContainer: {fileID: 224804222022451124}
+  _commandSymbolBackgroundImage: {fileID: 114676944625175174}
+  _commandSymbolImage: {fileID: 114234973733758640}
+  _commandInputField: {fileID: 114432856789663222}
+  _commandInputFieldImage: {fileID: 114873479719376062}
+  _commandInputFieldText: {fileID: 114154169860851162}
+  _searchContainer: {fileID: 224320100547517278}
+  _searchSymbolBackgroundImage: {fileID: 114196261944909196}
+  _searchSymbolImage: {fileID: 114081513656881718}
+  _searchInputField: {fileID: 114319431709787242}
+  _searchInputFieldImage: {fileID: 114125130285169674}
+  _searchInputFieldText: {fileID: 114154169860851162}
   _logViewHistoryMax: 64
   _obeliskLogPrefab: {fileID: 114459954850255048, guid: 1727b4d50e9a06b4a84d090e5e7918c7,
     type: 2}
