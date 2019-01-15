@@ -174,6 +174,8 @@ namespace HUDConsole {
 			if (_enableDefaultCommands == false) {
 				return;
 			}
+			
+			DontDestroyOnLoad(gameObject);
 
 			// Add core commands.
 			AddCommand("Console.Log", ConsoleCoreCommands.ConsoleLog, "Display message to console.");
