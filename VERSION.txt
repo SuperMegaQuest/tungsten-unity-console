@@ -1,4 +1,11 @@
 ----- ----- ----- -----
+HUDConsole 1.2.0 | ACTIVE DEVELOPMENT
+----- ----- ----- -----
+	* Repo no longer contains a unity project, and the console plugin has been moved to the repo root.
+	* Moved example files into a zip, instead of being active by default.
+	* Console will now survive scene changes using DontDestroyOnLoad.
+
+----- ----- ----- -----
 HUDConsole 1.1.0 | 2018/09/26
 ----- ----- ----- -----
     * Console now self instantiates.

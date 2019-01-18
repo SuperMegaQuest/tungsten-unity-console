@@ -2,6 +2,23 @@ using UnityEngine;
 
 namespace HUDConsole {
 	public class ConsoleCoreCommands {
+#region Init		
+		public static void AddCoreCommands() {
+			Console.AddCommand("Console.Log", ConsoleCoreCommands.ConsoleLog, "Display message to console.");
+			Console.AddCommand("Console.LogWarning", ConsoleCoreCommands.ConsoleLogWarning, "Display warning message to console.");
+			Console.AddCommand("Console.LogError", ConsoleCoreCommands.ConsoleLogError, "Display error message to console.");
+			Console.AddCommand("Console.Save", ConsoleCoreCommands.ConsoleSave, "Save console to log file.");
+			Console.AddCommand("Console.Copy", ConsoleCoreCommands.ConsoleCopy, "Copy console to clipboard.");
+			Console.AddCommand("Console.Clear", ConsoleCoreCommands.ConsoleClear, "Clear console.");
+			Console.AddCommand("Help", ConsoleCoreCommands.Help, "List of commands and their help text");
+
+			Console.AddCommand("Debug.Log", ConsoleCoreCommands.DebugLog, "Logs message to the Unity Console.");
+			Console.AddCommand("Debug.LogWarning", ConsoleCoreCommands.DebugLogWarning, "A variant of Debug.Log that logs a warning message to the console.");
+			Console.AddCommand("Debug.LogError", ConsoleCoreCommands.DebugLogError, "A variant of Debug.Log that logs an error message to the console.");
+			Console.AddCommand("Debug.Break", ConsoleCoreCommands.DebugBreak, "Pauses the editor.");
+		}
+#endregion Init		
+
 #region Console
 		public static void ConsoleLog(string[] args) {
 			string output = "";

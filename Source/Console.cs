@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace HUDConsole {
@@ -160,36 +159,25 @@ namespace HUDConsole {
 		}
 
 		private void Awake() {
+			// Setup instance.
 			if (_instance == null) {
 				_instance = this;
 			} else {
-				Debug.LogError("Two instances of ConsoleController detected.");
+				Debug.LogError("Two instances of HUDConsole detected.");
 				Destroy(gameObject);
 			}
 
 			// Instantiate view.
 			_consoleView = Instantiate(_consoleViewPrefab);
 			_consoleView.transform.SetParent(transform, false);
-
-			if (_enableDefaultCommands == false) {
-				return;
-			}
 			
+			// Set dont destroy on load to this object.
 			DontDestroyOnLoad(gameObject);
 
 			// Add core commands.
-			AddCommand("Console.Log", ConsoleCoreCommands.ConsoleLog, "Display message to console.");
-			AddCommand("Console.LogWarning", ConsoleCoreCommands.ConsoleLogWarning, "Display warning message to console.");
-			AddCommand("Console.LogError", ConsoleCoreCommands.ConsoleLogError, "Display error message to console.");
-			AddCommand("Console.Save", ConsoleCoreCommands.ConsoleSave, "Save console to log file.");
-			AddCommand("Console.Copy", ConsoleCoreCommands.ConsoleCopy, "Copy console to clipboard.");
-			AddCommand("Console.Clear", ConsoleCoreCommands.ConsoleClear, "Clear console.");
-			AddCommand("Help", ConsoleCoreCommands.Help, "List of commands and their help text");
-
-			AddCommand("Debug.Log", ConsoleCoreCommands.DebugLog, "Logs message to the Unity Console.");
-			AddCommand("Debug.LogWarning", ConsoleCoreCommands.DebugLogWarning, "A variant of Debug.Log that logs a warning message to the console.");
-			AddCommand("Debug.LogError", ConsoleCoreCommands.DebugLogError, "A variant of Debug.Log that logs an error message to the console.");
-			AddCommand("Debug.Break", ConsoleCoreCommands.DebugBreak, "Pauses the editor.");
+			if (_enableDefaultCommands) {
+				ConsoleCoreCommands.AddCoreCommands();
+			}
 		}
 
 		private void Start() {
