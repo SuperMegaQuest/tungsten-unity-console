@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38bb8e1d306b42afa99dd79c9b130f6a, type: 3}
+  m_Name: ConsoleConfig
+  m_EditorClassIdentifier: 
+  _consoleHistory: {fileID: 11400000, guid: 138c80396f2ed9742be4ba4f168d01db, type: 2}
+  _enableCoreCommands: 1
+  _logUnityErrors: 1
+  _logUnityAsserts: 1
+  _logUnityWarnings: 1
+  _logUnityLogs: 1
+  _logUnityExceptions: 1
+  _consoleViewPrefab: {fileID: 114930099926815140, guid: 38f18c59f1e406b4d8a59f5ee4c54458,
+    type: 2}

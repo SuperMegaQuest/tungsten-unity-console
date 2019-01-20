@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace HUDConsole {
-	[CreateAssetMenu(menuName = "Console/Obelisk ColorSet", fileName = "ObeliskColorSet_")]
+	[CreateAssetMenu(menuName = "HUDConsole/Obelisk ColorSet Asset", fileName = "ObeliskColorSet_")]
 	public class ObeliskColorSet : ScriptableObject {
 #region Public
 		// General.

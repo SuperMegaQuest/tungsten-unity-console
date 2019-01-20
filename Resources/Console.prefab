@@ -78,15 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35a7ac43b45f33746a8debcdb80802a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _consoleHistory: {fileID: 11400000, guid: 138c80396f2ed9742be4ba4f168d01db, type: 2}
-  _enableDefaultCommands: 1
-  _logUnityErrors: 1
-  _logUnityAsserts: 1
-  _logUnityWarnings: 1
-  _logUnityLogs: 1
-  _logUnityExceptions: 1
-  _consoleViewPrefab: {fileID: 114930099926815140, guid: 38f18c59f1e406b4d8a59f5ee4c54458,
-    type: 2}
+  _config: {fileID: 11400000, guid: a4d271e40f545854489ab6f4d48b740a, type: 2}
 --- !u!223 &223969871973032456
 Canvas:
   m_ObjectHideFlags: 1

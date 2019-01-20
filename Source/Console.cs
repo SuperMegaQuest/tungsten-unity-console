@@ -14,7 +14,7 @@ namespace HUDConsole {
 		}
 
 		public static ConsoleHistory ConsoleHistory {
-			get { return _instance._consoleHistory; }
+			get { return _instance._config._consoleHistory; }
 		}
 
 		public static void AddCommand(string commandName, CommandHandler handler, string helpText) {
@@ -134,22 +134,25 @@ namespace HUDConsole {
 		/// <summary>Tests whether a string is a drive root. e.g. "D:\"</summary>
 		static readonly Regex _isDrivePath = new Regex(_regexDrivePath);
 
-		[Header("History")]
-		[SerializeField] private ConsoleHistory _consoleHistory;
+		// [Header("History")]
+		// [SerializeField] private ConsoleHistory _consoleHistory;
+		//
+		// [Header("Default Commands")]
+		// [SerializeField] private bool _enableDefaultCommands = true;
+		//
+		// [Header("Unity Log Settings")]
+		// [SerializeField] private bool _logUnityErrors = true;
+		// [SerializeField] private bool _logUnityAsserts = true;
+		// [SerializeField] private bool _logUnityWarnings = true;
+		// [SerializeField] private bool _logUnityLogs = true;
+		// [SerializeField] private bool _logUnityExceptions = true;
+		//
+		// [Header("Console View")]
+		// [Tooltip("Select which console view implementation to use.")]
+		// [SerializeField] private ConsoleViewAbstract _consoleViewPrefab;
 
-		[Header("Default Commands")]
-		[SerializeField] private bool _enableDefaultCommands = true;
-
-		[Header("Unity Log Settings")]
-		[SerializeField] private bool _logUnityErrors = true;
-		[SerializeField] private bool _logUnityAsserts = true;
-		[SerializeField] private bool _logUnityWarnings = true;
-		[SerializeField] private bool _logUnityLogs = true;
-		[SerializeField] private bool _logUnityExceptions = true;
-
-		[Header("Console View")]
-		[Tooltip("Select which console view implementation to use.")]
-		[SerializeField] private ConsoleViewAbstract _consoleViewPrefab;
+		[Header("Console Config")]
+		[SerializeField] private ConsoleConfig _config;
 
 		private ConsoleViewAbstract _consoleView;
 
@@ -168,14 +171,14 @@ namespace HUDConsole {
 			}
 
 			// Instantiate view.
-			_consoleView = Instantiate(_consoleViewPrefab);
+			_consoleView = Instantiate(_config._consoleViewPrefab);
 			_consoleView.transform.SetParent(transform, false);
 			
 			// Set dont destroy on load to this object.
 			DontDestroyOnLoad(gameObject);
 
 			// Add core commands.
-			if (_enableDefaultCommands) {
+			if (_config._enableCoreCommands) {
 				ConsoleCoreCommands.AddCoreCommands();
 			}
 		}
@@ -258,35 +261,35 @@ namespace HUDConsole {
 		private void HandleUnityLog(string logString, string stackTrace, LogType logType) {
 			switch (logType) {
 				case LogType.Error: {
-					if (_logUnityErrors) {
+					if (_config._logUnityErrors) {
 						CreateLog(logString, stackTrace, logType);
 					}
 
 					break;
 				}
 				case LogType.Assert: {
-					if (_logUnityAsserts) {
+					if (_config._logUnityAsserts) {
 						CreateLog(logString, stackTrace, logType);
 					}
 
 					break;
 				}
 				case LogType.Warning: {
-					if (_logUnityWarnings) {
+					if (_config._logUnityWarnings) {
 						CreateLog(logString, stackTrace, logType);
 					}
 
 					break;
 				}
 				case LogType.Log: {
-					if (_logUnityLogs) {
+					if (_config._logUnityLogs) {
 						CreateLog(logString, stackTrace, logType);
 					}
 
 					break;
 				}
 				case LogType.Exception: {
-					if (_logUnityExceptions) {
+					if (_config._logUnityExceptions) {
 						CreateLog(logString, stackTrace, logType);
 					}
 
