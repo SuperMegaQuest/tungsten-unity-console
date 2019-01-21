@@ -5,13 +5,18 @@ using UnityEngine;
 namespace HUDConsole {
 	[CreateAssetMenu(menuName = "HUDConsole/Console History Asset", fileName = "ConsoleHistory")]
 	public class ConsoleHistory : ScriptableObject {
-#region Public
+		
+		[SerializeField] private ConsoleConfig _config;
+		
 #region Command
+		private List<string> _commandHistory = new List<string>();
+		
 		public void CommandHistoryAdd(string commandString) {
-			if (_commandHistory.Count >= _commandHistoryMax) {
+			if (_config._commandHistoryCapacity != -1
+			&& _commandHistory.Count >= _config._commandHistoryCapacity) {
 				_commandHistory.RemoveAt(0);
 			}
-
+			
 			_commandHistory.Add(commandString);
 		}
 
@@ -25,7 +30,15 @@ namespace HUDConsole {
 #endregion Command
 
 #region Log
+		private Action logHistoryChanged;
+		private List<ConsoleLog> _logHistory = new List<ConsoleLog>();
+		
 		public void LogAdd(ConsoleLog consoleLog) {
+			if (_config._logHistoryCapacity != -1
+			&& _logHistory.Count >= _config._logHistoryCapacity) {
+				_logHistory.RemoveAt(0);
+			}
+			
 			_logHistory.Add(consoleLog);
 			logHistoryChanged();
 		}
@@ -46,20 +59,6 @@ namespace HUDConsole {
 			logHistoryChanged -= callback;
 		}
 #endregion Log
-#endregion Public
 
-#region Private
-#region Command
-		[SerializeField]
-		private int _commandHistoryMax = 32;
-
-		private List<string> _commandHistory = new List<string>();
-#endregion Command
-
-#region Log
-		private Action logHistoryChanged;
-		private List<ConsoleLog> _logHistory = new List<ConsoleLog>();
-#endregion Log
-#endregion Private
 	}
 }

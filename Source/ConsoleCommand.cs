@@ -1,4 +1,5 @@
 ﻿namespace HUDConsole {
+	
 	/// <summary>
 	/// Contains information about each command.
 	/// </summary>
@@ -13,4 +14,5 @@
 			this.helpText = helpText;
 		}
 	}
+	
 }

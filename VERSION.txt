@@ -4,6 +4,8 @@ HUDConsole 1.2.0 | ACTIVE DEVELOPMENT
 	* Repo no longer contains a unity project, and the console plugin has been moved to the repo root.
 	* Moved example files into a zip, instead of being active by default.
 	* Console will now survive scene changes using DontDestroyOnLoad.
+	* Added option to limit history of logs.
+	* Added option to have unlimited history of logs and commands. (Set capacity to -1).
 
 ----- ----- ----- -----
 HUDConsole 1.1.0 | 2018/09/26

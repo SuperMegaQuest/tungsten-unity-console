@@ -1,6 +1,7 @@
 using UnityEngine;
 
 namespace HUDConsole {
+	
 	public struct ConsoleLog {
 		public string logString { get; private set; }
 		public string stackTrace { get; private set; }
@@ -18,4 +19,5 @@ namespace HUDConsole {
 			this.bgColor = bgColor;
 		}
 	}
+	
 }

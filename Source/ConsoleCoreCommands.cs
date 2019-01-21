@@ -1,6 +1,7 @@
 using UnityEngine;
 
 namespace HUDConsole {
+	
 	public class ConsoleCoreCommands {
 #region Init		
 		public static void AddCoreCommands() {
@@ -97,4 +98,5 @@ namespace HUDConsole {
 		}
 #endregion Debug
 	}
+	
 }
