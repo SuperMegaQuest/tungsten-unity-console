@@ -3,11 +3,15 @@ using UnityEngine;
 namespace HUDConsole {
 [CreateAssetMenu(menuName = "HUDConsole/Console Config Asset", fileName = "ConsoleConfig")]
 public class ConsoleConfig : ScriptableObject {
+	[Header("Instantiation")]
+	public bool _dontDestroyOnLoad = true;
 	
 	[Header("History")]
 	public ConsoleHistory _consoleHistory;
-	[Tooltip("Set to -1 to not limit the number of logs stored")] public int _logHistoryCapacity = -1;
-	[Tooltip("Set to -1 to not limit the number of commands stored")] public int _commandHistoryCapacity = -1;
+	[Tooltip("Set to -1 to not limit the number of logs stored")]
+	public int _logHistoryCapacity = -1;
+	[Tooltip("Set to -1 to not limit the number of commands stored")]
+	public int _commandHistoryCapacity = -1;
 
 	[Header("Core Commands")]
 	public bool _enableCoreCommands = true;

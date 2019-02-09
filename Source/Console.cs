@@ -10,30 +10,13 @@ namespace HUDConsole {
 public class Console : MonoBehaviour {
 	
 #region Init
-	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-	private static void InstantiateConsole() {
-		Instantiate(Resources.Load("Console"));
-	}
+	// [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+	// private static void InstantiateConsole() {
+	// 	Instantiate(Resources.Load("Console"));
+	// }
 
 	private void Awake() {
-		// Setup instance.
-		if (_instance == null) {
-			_instance = this;
-		} else {
-			Debug.LogError("Two instances of HUDConsole detected.");
-			Destroy(gameObject);
-		}
-
-		// Instantiate view.
-		InstantiateView();
-		
-		// Set dont destroy on load to this object.
-		DontDestroyOnLoad(gameObject);
-
-		// Add core commands.
-		if (_config._enableCoreCommands) {
-			ConsoleCoreCommands.AddCoreCommands();
-		}
+		CoreAwake();
 	}
 
 	private void Start() {
@@ -57,6 +40,29 @@ public class Console : MonoBehaviour {
 	
 	public static ConsoleHistory ConsoleHistory {
 		get { return _instance._config._consoleHistory; }
+	}
+
+	private void CoreAwake() {
+		// Setup instance.
+		if (_instance == null) {
+			_instance = this;
+		} else {
+			Debug.LogError("Two instances of HUDConsole detected.");
+			Destroy(gameObject);
+		}
+
+		// Instantiate view.
+		InstantiateView();
+		
+		// Set dont destroy on load to this object.
+		if (_config._dontDestroyOnLoad) {
+			DontDestroyOnLoad(gameObject);
+		}
+
+		// Add core commands.
+		if (_config._enableCoreCommands) {
+			ConsoleCoreCommands.AddCoreCommands();
+		}
 	}
 	
 	/// <summary>
