@@ -127,8 +127,10 @@ public class Console : MonoBehaviour {
 	}
 
 	private void InstantiateView() {
-		_consoleView = Instantiate(_config._consoleViewPrefab);
-		_consoleView.transform.SetParent(transform, false);
+		if (_config._instantiateView) {
+			_consoleView = Instantiate(_config._consoleViewPrefab);
+			_consoleView.transform.SetParent(transform, false);
+		}
 	}
 #endregion View
 

@@ -25,6 +25,7 @@ public class ConsoleConfig : ScriptableObject {
 
 	[Header("Console View")]
 	[Tooltip("Select which console view implementation to use.")]
+	public bool _instantiateView = true;
 	public ConsoleViewAbstract _consoleViewPrefab;
 	
 }

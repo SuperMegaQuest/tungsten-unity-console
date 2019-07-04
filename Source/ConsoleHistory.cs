@@ -40,7 +40,7 @@ public class ConsoleHistory : ScriptableObject {
 		}
 		
 		_logHistory.Add(consoleLog);
-		logHistoryChanged();
+		logHistoryChanged?.Invoke();
 	}
 
 	public ConsoleLog LogGetLatest() {
