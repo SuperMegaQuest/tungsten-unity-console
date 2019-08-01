@@ -1,102 +1,100 @@
 using UnityEngine;
 
-namespace HUDConsole {
-public class ConsoleCoreCommands {
-	
-#region Init		
-	public static void AddCoreCommands() {
-		Console.AddCommand("Console.Log", ConsoleCoreCommands.ConsoleLog, "Display message to console.");
-		Console.AddCommand("Console.LogWarning", ConsoleCoreCommands.ConsoleLogWarning, "Display warning message to console.");
-		Console.AddCommand("Console.LogError", ConsoleCoreCommands.ConsoleLogError, "Display error message to console.");
-		Console.AddCommand("Console.Save", ConsoleCoreCommands.ConsoleSave, "Save console to log file.");
-		Console.AddCommand("Console.Copy", ConsoleCoreCommands.ConsoleCopy, "Copy console to clipboard.");
-		Console.AddCommand("Console.Clear", ConsoleCoreCommands.ConsoleClear, "Clear console.");
-		Console.AddCommand("Help", ConsoleCoreCommands.Help, "List of commands and their help text");
+namespace Gruel {
+	public static class ConsoleCoreCommands {
+		
+#region Public Methods
+		public static void AddCoreCommands() {
+			Console.AddCommand("Console.Log", ConsoleLog, "Display message to console.");
+			Console.AddCommand("Console.LogWarning", ConsoleLogWarning, "Display warning message to console.");
+			Console.AddCommand("Console.LogError", ConsoleLogError, "Display error message to console.");
+			Console.AddCommand("Console.Save", ConsoleSave, "Save console to log file.");
+			Console.AddCommand("Console.Copy", ConsoleCopy, "Copy console to clipboard.");
+			Console.AddCommand("Console.Clear", ConsoleClear, "Clear console.");
+			Console.AddCommand("Help", Help, "List of commands and their help text");
 
-		Console.AddCommand("Debug.Log", ConsoleCoreCommands.DebugLog, "Logs message to the Unity Console.");
-		Console.AddCommand("Debug.LogWarning", ConsoleCoreCommands.DebugLogWarning, "A variant of Debug.Log that logs a warning message to the console.");
-		Console.AddCommand("Debug.LogError", ConsoleCoreCommands.DebugLogError, "A variant of Debug.Log that logs an error message to the console.");
-		Console.AddCommand("Debug.Break", ConsoleCoreCommands.DebugBreak, "Pauses the editor.");
-	}
-#endregion Init		
+			Console.AddCommand("Debug.Log", DebugLog, "Logs message to the Unity Console.");
+			Console.AddCommand("Debug.LogWarning", DebugLogWarning, "A variant of Debug.Log that logs a warning message to the console.");
+			Console.AddCommand("Debug.LogError", DebugLogError, "A variant of Debug.Log that logs an error message to the console.");
+			Console.AddCommand("Debug.Break", DebugBreak, "Pauses the editor.");
+		}
+#endregion Public Methods
 
-#region Console
-	public static void ConsoleLog(string[] args) {
-		string output = "";
-		for (int i = 0, n = args.Length; i < n; i++) {
-			output += args[i] + " ";
+#region Private Methods
+		private static void ConsoleLog(string[] args) {
+			string output = "";
+			for (int i = 0, n = args.Length; i < n; i++) {
+				output += args[i] + " ";
+			}
+
+			Console.Log(output);
 		}
 
-		Console.Log(output);
-	}
+		private static void ConsoleLogWarning(string[] args) {
+			string output = "";
+			for (int i = 0, n = args.Length; i < n; i++) {
+				output += args[i] + " ";
+			}
 
-	public static void ConsoleLogWarning(string[] args) {
-		string output = "";
-		for (int i = 0, n = args.Length; i < n; i++) {
-			output += args[i] + " ";
+			Console.LogWarning(output);
 		}
 
-		Console.LogWarning(output);
-	}
+		private static void ConsoleLogError(string[] args) {
+			string output = "";
+			for (int i = 0, n = args.Length; i < n; i++) {
+				output += args[i] + " ";
+			}
 
-	public static void ConsoleLogError(string[] args) {
-		string output = "";
-		for (int i = 0, n = args.Length; i < n; i++) {
-			output += args[i] + " ";
+			Console.LogError(output);
 		}
 
-		Console.LogError(output);
-	}
-
-	public static void ConsoleSave(string[] args) {
-		Console.Log(string.Format("Saved to {0}", Console.SaveHistoryToLogFile((args == null || args.Length == 0) ? "" : args[0])));
-	}
-
-	public static void ConsoleCopy(string[] args) {
-		Console.CopyHistoryToClipboard();
-	}
-
-	public static void ConsoleClear(string[] args) {
-		Console.ClearConsoleView();
-	}
-
-	public static void Help(string[] args) {
-		Console.PrintHelpText();
-	}
-#endregion Console
-
-#region Debug
-	public static void DebugLog(string[] args) {
-		string output = "";
-		for (int i = 0, n = args.Length; i < n; i++) {
-			output += args[i] + " ";
+		private static void ConsoleSave(string[] args) {
+			Console.Log(string.Format("Saved to {0}", Console.SaveHistoryToLogFile((args == null || args.Length == 0) ? "" : args[0])));
 		}
 
-		Debug.Log(output);
-	}
-
-	public static void DebugLogWarning(string[] args) {
-		string output = "";
-		for (int i = 0, n = args.Length; i < n; i++) {
-			output += args[i] + " ";
+		private static void ConsoleCopy(string[] args) {
+			Console.CopyHistoryToClipboard();
 		}
 
-		Debug.LogWarning(output);
-	}
-
-	public static void DebugLogError(string[] args) {
-		string output = "";
-		for (int i = 0, n = args.Length; i < n; i++) {
-			output += args[i] + " ";
+		private static void ConsoleClear(string[] args) {
+			Console.ClearConsoleView();
 		}
 
-		Debug.LogError(output);
-	}
+		private static void Help(string[] args) {
+			Console.PrintHelpText();
+		}
+		
+		private static void DebugLog(string[] args) {
+			string output = "";
+			for (int i = 0, n = args.Length; i < n; i++) {
+				output += args[i] + " ";
+			}
 
-	public static void DebugBreak(string[] args) {
-		Debug.Break();
+			Debug.Log(output);
+		}
+
+		private static void DebugLogWarning(string[] args) {
+			string output = "";
+			for (int i = 0, n = args.Length; i < n; i++) {
+				output += args[i] + " ";
+			}
+
+			Debug.LogWarning(output);
+		}
+
+		private static void DebugLogError(string[] args) {
+			string output = "";
+			for (int i = 0, n = args.Length; i < n; i++) {
+				output += args[i] + " ";
+			}
+
+			Debug.LogError(output);
+		}
+
+		private static void DebugBreak(string[] args) {
+			Debug.Break();
+		}
+#endregion Private Methods
+		
 	}
-#endregion Debug
-	
-}
 }

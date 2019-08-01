@@ -1,20 +1,30 @@
 using System;
 using UnityEngine;
 
-namespace HUDConsole {
-public class ListenForDimensionsChange : MonoBehaviour {
-	
-	public void SubscribeToDimensionsChange(Action callback) {
-		OnDimensionsChanged += callback;
-	}
+namespace Gruel.Obelisk {
+	public class ListenForDimensionsChange : MonoBehaviour {
+		
+#region Fields
+		private Action _onDimensionsChanged;
+#endregion Fields
 
-	private Action OnDimensionsChanged;
-
-	private void OnRectTransformDimensionsChange() {
-		if (OnDimensionsChanged != null) {
-			OnDimensionsChanged();
+#region Public Methods
+		public void AddDimensionsChangedListener(Action callback) {
+			_onDimensionsChanged += callback;
 		}
+
+		public void RemoveDimensionsChangedListener(Action callback) {
+			_onDimensionsChanged -= callback;
+		}
+#endregion Public Methods
+
+#region Private Methods
+		private void OnRectTransformDimensionsChange() {
+			if (_onDimensionsChanged != null) {
+				_onDimensionsChanged();
+			}
+		}
+#endregion Private Methods
+		
 	}
-	
-}
 }

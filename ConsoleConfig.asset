@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38bb8e1d306b42afa99dd79c9b130f6a, type: 3}
   m_Name: ConsoleConfig
   m_EditorClassIdentifier: 
-  _dontDestroyOnLoad: 0
+  _dontDestroyOnLoad: 1
   _consoleHistory: {fileID: 11400000, guid: 138c80396f2ed9742be4ba4f168d01db, type: 2}
   _logHistoryCapacity: -1
   _commandHistoryCapacity: -1
@@ -23,5 +23,5 @@ MonoBehaviour:
   _logUnityLogs: 1
   _logUnityExceptions: 1
   _instantiateView: 0
-  _consoleViewPrefab: {fileID: 114930099926815140, guid: 38f18c59f1e406b4d8a59f5ee4c54458,
+  _viewPrefab: {fileID: 114930099926815140, guid: 38f18c59f1e406b4d8a59f5ee4c54458,
     type: 3}

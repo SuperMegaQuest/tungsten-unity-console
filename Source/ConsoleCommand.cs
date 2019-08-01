@@ -1,18 +1,23 @@
-﻿namespace HUDConsole {
+﻿namespace Gruel {
 	
-/// <summary>
-/// Contains information about each command.
-/// </summary>
-public struct ConsoleCommand {
-	public string commandName { get; private set; }
-	public CommandHandler handler { get; private set; }
-	public string helpText { get; private set; }
-	
-	public ConsoleCommand(string commandName, CommandHandler handler, string helpText) : this() {
-		this.commandName = commandName;
-		this.handler = handler;
-		this.helpText = helpText;
+	/// <summary>
+	/// Contains information about each command.
+	/// </summary>
+	public class ConsoleCommand {
+		
+#region Properties
+		public string CommandName { get; }
+		public CommandHandler Handler { get; }
+		public string HelpText { get; }
+#endregion Properties
+		
+#region Constructor
+		public ConsoleCommand(string commandName, CommandHandler handler, string helpText) {
+			CommandName = commandName;
+			Handler = handler;
+			HelpText = helpText;
+		}
+#endregion Constructor
+		
 	}
-}
-	
 }

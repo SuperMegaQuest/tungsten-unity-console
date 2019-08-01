@@ -1,77 +1,86 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace HUDConsole {
-public class ObeliskLog : MonoBehaviour {
-	
-	public ConsoleLog ConsoleLog { get; private set; }
+namespace Gruel.Obelisk {
+	public class ObeliskLog : MonoBehaviour {
+		
+#region Properties
+		public ConsoleLog ConsoleLog { get; private set; }
+		public float Height => _rectTransform.sizeDelta.y;
+#endregion Properties
 
-	public RectTransform RectTransform { get; private set; }
+#region Fields
+		[SerializeField] private RectTransform _rectTransform;
+		[SerializeField] private Image _background;
+		[SerializeField] private Button _button;
+		[SerializeField] private Text _text;
+		[SerializeField] private GameObject _stackTraceGameObject;
+		[SerializeField] private Image _stackTraceImage;
 
-	public void SetLog(ref ConsoleLog log) {
-		ConsoleLog = log;
+		private const float HeightIncrement = 20.0f;
 
-		if (log.customColor) {
-			SetColors(log.textColor, log.bgColor);
-		} else {
-			SetColors(log.logType);
+		private ObeliskConsole _obeliskConsole;
+		private ObeliskColorSet _colorSet;
+#endregion Fields
+
+#region Public Methods
+		public void Init(ObeliskConsole obeliskConsole, ObeliskColorSet colorSet) {
+			_obeliskConsole = obeliskConsole;
+			_colorSet = colorSet;
+			
+			_stackTraceImage.color = _colorSet.IconColor;
+			_button.onClick.AddListener(OnButtonClicked);
+		}
+		
+		public void SetLog(ref ConsoleLog log) {
+			ConsoleLog = log;
+
+			if (log.CustomColor) {
+				SetColors(log.TextColor, log.BgColor);
+			} else {
+				SetColors(log.LogType);
+			}
+
+			_text.text = log.LogString;
+
+			if (string.IsNullOrEmpty(ConsoleLog.StackTrace) == false) {
+				_stackTraceGameObject.SetActive(true);
+			}
+		}
+#endregion Public Methods
+
+#region Private Methods
+		private void OnButtonClicked() {
+			if (ConsoleLog.StackTrace == "") {
+				return;
+			}
+
+			_obeliskConsole.OpenStackTraceForLog(ConsoleLog);
 		}
 
-		_text.text = log.logString;
+		private void OnRectTransformDimensionsChange() {
+			var heightMultiple = Mathf.Ceil(_text.preferredHeight / HeightIncrement);
+			var newHeight = heightMultiple * HeightIncrement;
 
-		if (string.IsNullOrEmpty(ConsoleLog.stackTrace) == false) {
-			_stackTraceGameObject.SetActive(true);
-		}
-	}
-
-	[SerializeField] private Image _background;
-	[SerializeField] private Button _button;
-	[SerializeField] private Text _text;
-	[SerializeField] private GameObject _stackTraceGameObject;
-	[SerializeField] private Image _stackTraceImage;
-
-	private const float _heightIncrement = 20.0f;
-
-#region Init
-	private void Awake() {
-		SetupComponents();
-	}
-
-	private void OnRectTransformDimensionsChange() {
-		float heightMultiple = Mathf.Ceil(_text.preferredHeight / ObeliskLog._heightIncrement);
-		float newHeight = heightMultiple * _heightIncrement;
-
-		RectTransform.sizeDelta = new Vector2(RectTransform.sizeDelta.x, newHeight);
-	}
-
-	private void SetupComponents() {
-		RectTransform = GetComponent<RectTransform>();
-		_button.onClick.AddListener(delegate { ButtonHandler(_button); });
-		_stackTraceImage.color = ObeliskConsole.ColorSet.IconColor;
-	}
-#endregion Init
-
-	private void SetColors(LogType logType) {
-		var newBackgroundColor = ObeliskConsole.ColorSet.LogBackgroundColor(logType);
-
-		if (transform.parent.childCount % 2 == 0) {
-			newBackgroundColor += new Color(0.015f, 0.015f, 0.015f, 1.0f);
+			_rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, newHeight);
 		}
 
-		_background.color = newBackgroundColor;
-		_text.color = ObeliskConsole.ColorSet.LogTextColor(logType);
-	}
+		private void SetColors(LogType logType) {
+			var backgroundColor = _colorSet.LogBackgroundColor(logType);
 
-	private void SetColors(Color textColor, Color backgroundColor) {
-		_background.color = backgroundColor;
-		_text.color = textColor;
-	}
+			if ((transform.parent.childCount % 2) == 0) {
+				backgroundColor += new Color(0.015f, 0.015f, 0.015f, 1.0f);
+			}
 
-	private void ButtonHandler(Button target) {
-		if (ConsoleLog.stackTrace == "") { return; }
+			_background.color = backgroundColor;
+			_text.color = _colorSet.LogTextColor(logType);
+		}
 
-		ObeliskConsole.OpenStackTraceForLog(ConsoleLog);
+		private void SetColors(Color textColor, Color backgroundColor) {
+			_background.color = backgroundColor;
+			_text.color = textColor;
+		}
+#endregion Private Methods
+		
 	}
-	
-}
 }
