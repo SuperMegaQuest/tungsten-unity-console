@@ -22,6 +22,6 @@ MonoBehaviour:
   _logUnityWarnings: 1
   _logUnityLogs: 1
   _logUnityExceptions: 1
-  _instantiateView: 0
+  _instantiateView: 1
   _viewPrefab: {fileID: 114930099926815140, guid: 38f18c59f1e406b4d8a59f5ee4c54458,
     type: 3}
