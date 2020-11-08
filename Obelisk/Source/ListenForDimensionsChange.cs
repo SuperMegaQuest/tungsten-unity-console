@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Gruel.Obelisk {
 	public class ListenForDimensionsChange : MonoBehaviour {
-		
+
 #region Fields
 		private Action _onDimensionsChanged;
 #endregion Fields
@@ -20,11 +20,9 @@ namespace Gruel.Obelisk {
 
 #region Private Methods
 		private void OnRectTransformDimensionsChange() {
-			if (_onDimensionsChanged != null) {
-				_onDimensionsChanged();
-			}
+			_onDimensionsChanged?.Invoke();
 		}
 #endregion Private Methods
-		
+
 	}
 }

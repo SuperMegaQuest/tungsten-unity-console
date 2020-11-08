@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Gruel.Obelisk {
 	public class ObeliskFilterDropdown : MonoBehaviour {
-		
+
 #region Properties
 		public ObeliskColorSet ColorSet {
 			get => _colorSet;
@@ -86,24 +86,24 @@ namespace Gruel.Obelisk {
 #region Private Methods
 		private void Awake() {
 			// Dropdown.
-			_dropdownButton.onClick.AddListener(delegate { DropdownButtonHandler(_dropdownButton); });
+			_dropdownButton.onClick.AddListener(() => DropdownButtonHandler(_dropdownButton));
 
 			// Error.
-			_errorToggle.onValueChanged.AddListener(delegate { ErrorToggleHandler(_errorToggle); });
+			_errorToggle.onValueChanged.AddListener(evt => ErrorToggleHandler(_errorToggle));
 
 			// Assert.
-			_assertToggle.onValueChanged.AddListener(delegate { AssertToggleHandler(_assertToggle); });
+			_assertToggle.onValueChanged.AddListener(evt => AssertToggleHandler(_assertToggle));
 
 			// Warning.
-			_warningToggle.onValueChanged.AddListener(delegate { WarningToggleHandler(_warningToggle); });
+			_warningToggle.onValueChanged.AddListener(evt => WarningToggleHandler(_warningToggle));
 
 			// Log.
-			_logToggle.onValueChanged.AddListener(delegate { LogToggleHandler(_logToggle); });
+			_logToggle.onValueChanged.AddListener(evt => LogToggleHandler(_logToggle));
 
 			// Exception.
-			_exceptionToggle.onValueChanged.AddListener(delegate { ExceptionToggleHandler(_exceptionToggle); });
+			_exceptionToggle.onValueChanged.AddListener(evt => ExceptionToggleHandler(_exceptionToggle));
 		}
-		
+
 		private void DropdownButtonHandler(Button target) {
 			ToggleState();
 		}
@@ -122,72 +122,32 @@ namespace Gruel.Obelisk {
 
 		private void ErrorToggleHandler(Toggle target) {
 			_filterSettings[LogType.Error] = target.isOn;
-
-			if (_filterSettingsChanged != null) {
-				_filterSettingsChanged();
-			}
-
-			if (target.isOn) {
-				_errorToggleIconImage.color = _colorSet.IconDisabledColor;
-			} else {
-				_errorToggleIconImage.color = _colorSet.IconColor;
-			}
+			_filterSettingsChanged?.Invoke();
+			_errorToggleIconImage.color = target.isOn ? _colorSet.IconDisabledColor : _colorSet.IconColor;
 		}
 
 		private void AssertToggleHandler(Toggle target) {
 			_filterSettings[LogType.Assert] = target.isOn;
-
-			if (_filterSettingsChanged != null) {
-				_filterSettingsChanged();
-			}
-
-			if (target.isOn) {
-				_assertToggleIconImage.color = _colorSet.IconDisabledColor;
-			} else {
-				_assertToggleIconImage.color = _colorSet.IconColor;
-			}
+			_filterSettingsChanged?.Invoke();
+			_assertToggleIconImage.color = target.isOn ? _colorSet.IconDisabledColor : _colorSet.IconColor;
 		}
 
 		private void WarningToggleHandler(Toggle target) {
 			_filterSettings[LogType.Warning] = target.isOn;
-
-			if (_filterSettingsChanged != null) {
-				_filterSettingsChanged();
-			}
-
-			if (target.isOn) {
-				_warningToggleIconImage.color = _colorSet.IconDisabledColor;
-			} else {
-				_warningToggleIconImage.color = _colorSet.IconColor;
-			}
+			_filterSettingsChanged?.Invoke();
+			_warningToggleIconImage.color = target.isOn ? _colorSet.IconDisabledColor : _colorSet.IconColor;
 		}
 
 		private void LogToggleHandler(Toggle target) {
 			_filterSettings[LogType.Log] = target.isOn;
-
-			if (_filterSettingsChanged != null) {
-				_filterSettingsChanged();
-			}
-
-			if (target.isOn) {
-				_logToggleIconImage.color = _colorSet.IconDisabledColor;
-			} else {
-				_logToggleIconImage.color = _colorSet.IconColor;
-			}
+			_filterSettingsChanged?.Invoke();
+			_logToggleIconImage.color = target.isOn ? _colorSet.IconDisabledColor : _colorSet.IconColor;
 		}
 
 		private void ExceptionToggleHandler(Toggle target) {
 			_filterSettings[LogType.Exception] = target.isOn;
-
-			if (_filterSettingsChanged != null) {
-				_filterSettingsChanged();
-			}
-
-			if (target.isOn) {
-				_exceptionToggleIconImage.color = _colorSet.IconDisabledColor;
-			} else {
-				_exceptionToggleIconImage.color = _colorSet.IconColor;
-			}
+			_filterSettingsChanged?.Invoke();
+			_exceptionToggleIconImage.color = target.isOn ? _colorSet.IconDisabledColor : _colorSet.IconColor;
 		}
 
 		private void ColorSetChanged() {
@@ -215,6 +175,6 @@ namespace Gruel.Obelisk {
 			_exceptionToggleIconImage.color = _colorSet.IconColor;
 		}
 #endregion Private Methods
-		
+
 	}
 }

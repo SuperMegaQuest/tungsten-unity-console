@@ -57,25 +57,23 @@ namespace Gruel.Obelisk {
 		[SerializeField] private InputField _searchInputField;
 		[SerializeField] private Image _searchInputFieldImage;
 		[SerializeField] private Text _searchInputFieldText;
-		
+
 		[Header("Settings")]
 		[SerializeField] private int _logViewHistoryMax = 64;
-		
+
 		[Header("Obelisk Prefabs")]
 		[SerializeField] private ObeliskLog _obeliskLogPrefab;
 		[SerializeField] private ObeliskStackTrace _obeliskStackTracePrefab;
-		
+
 		[Header("Obelisk Color Set")]
 		[Tooltip("Color set objects.\nMust be in same order as DefaultViewColorSetName enum.")]
 		[SerializeField] private ObeliskColorSet _colorSetAsset;
-		
-//		private static ObeliskConsole _instance;
 
-		private List<ObeliskLog> _logViewHistory = new List<ObeliskLog>();
-		private Queue<ObeliskLog> _obeliskLogPool = new Queue<ObeliskLog>();
+		private readonly List<ObeliskLog> _logViewHistory = new List<ObeliskLog>();
+		private readonly Queue<ObeliskLog> _obeliskLogPool = new Queue<ObeliskLog>();
 		private ObeliskStackTrace _obeliskStackTrace;
 		private ObeliskColorSet _instantiatedColorSet;
-		
+
 		private int _commandHistoryDelta;
 #endregion Fields
 
@@ -83,7 +81,7 @@ namespace Gruel.Obelisk {
 		public override void ClearConsoleView() {
 			base.ClearConsoleView();
 
-			for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
+			for (var i = 0; i < _logViewHistory.Count; i++) {
 				PoolLog(_logViewHistory[i]);
 			}
 
@@ -107,21 +105,21 @@ namespace Gruel.Obelisk {
 			_containerListener.AddDimensionsChangedListener(OnContainerRectTransformDimensionsChange);
 
 			// Titlebar.
-			_closeButton.onClick.AddListener(delegate { CloseButtonHandler(_closeButton); });
+			_closeButton.onClick.AddListener(() => CloseButtonHandler(_closeButton));
 
 			// Filter.
 			_filterDropdown.AddFilterChangedListener(FilterUpdated);
 			_filterDropdown.ColorSet = _instantiatedColorSet;
 
 			// Search.
-			_searchInputField.onValueChanged.AddListener(delegate { SearchInputFieldUpdated(_searchInputField); });
-			
+			_searchInputField.onValueChanged.AddListener(evt => SearchInputFieldUpdated(_searchInputField));
+
 			// Fill log pool.
 			FillPool();
-			
+
 			// Apply color set to main window.
 			ApplyColorSet();
-			
+
 			// StackTrace window.
 			_obeliskStackTrace = Instantiate(_obeliskStackTracePrefab, transform.parent, false);
 			_obeliskStackTrace.ColorSet = _instantiatedColorSet;
@@ -131,12 +129,12 @@ namespace Gruel.Obelisk {
 			if (Input.GetKeyDown(KeyCode.BackQuote)) {
 				ToggleState();
 			}
-			
+
 			if (_container.gameObject.activeSelf
-				&& EventSystem.current.currentSelectedGameObject == _commandInputField.gameObject) {
+			&& EventSystem.current.currentSelectedGameObject == _commandInputField.gameObject) {
 				// Submit command.
 				if (Input.GetKeyDown(KeyCode.Return)
-					|| Input.GetKeyDown(KeyCode.KeypadEnter)) {
+				|| Input.GetKeyDown(KeyCode.KeypadEnter)) {
 					CommandSubmit();
 				}
 
@@ -155,12 +153,12 @@ namespace Gruel.Obelisk {
 				}
 			}
 		}
-		
+
 		private void OnContainerRectTransformDimensionsChange() {
 			ResizeLogLayout();
 			ResizeInputContainers();
 		}
-		
+
 		private void ApplyColorSet() {
 			// Main.
 			_containerBackgroundImage.color = _instantiatedColorSet.BackgroundColor;
@@ -177,11 +175,12 @@ namespace Gruel.Obelisk {
 			// Scrollbar.
 			_scrollbarBackgroundImage.color = _instantiatedColorSet.ScrollbarBackgroundColor;
 
-			var scrollbarColorBlock = new ColorBlock();
-			scrollbarColorBlock.normalColor = _instantiatedColorSet.ScrollbarSliderColor;
-			scrollbarColorBlock.highlightedColor = _instantiatedColorSet.ScrollbarSliderHighlightedColor;
-			scrollbarColorBlock.pressedColor = _instantiatedColorSet.ScrollbarSliderPressedColor;
-			scrollbarColorBlock.colorMultiplier = 1.0f;
+			var scrollbarColorBlock = new ColorBlock {
+				normalColor = _instantiatedColorSet.ScrollbarSliderColor,
+				highlightedColor = _instantiatedColorSet.ScrollbarSliderHighlightedColor,
+				pressedColor = _instantiatedColorSet.ScrollbarSliderPressedColor,
+				colorMultiplier = 1.0f
+			};
 			_scrollbar.colors = scrollbarColorBlock;
 
 			// Input
@@ -199,11 +198,11 @@ namespace Gruel.Obelisk {
 			_searchInputFieldImage.color = _instantiatedColorSet.ButtonColor;
 			_searchInputFieldText.color = _instantiatedColorSet.InputTextColor;
 		}
-		
+
 		private void ToggleState() {
 			SetEnabled(_container.gameObject.activeSelf == false);
 		}
-		
+
 		private void SetEnabled(bool enable) {
 			_container.gameObject.SetActive(enable);
 
@@ -220,7 +219,7 @@ namespace Gruel.Obelisk {
 		private void CloseButtonHandler(Button target) {
 			ToggleState();
 		}
-		
+
 		protected override void OnConsoleLogHistoryChanged() {
 			base.OnConsoleLogHistoryChanged();
 
@@ -266,19 +265,18 @@ namespace Gruel.Obelisk {
 			var newHeight = 0.0f;
 
 			// Resize LogLayout so it can properly contain all the logs.
-			for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
+			for (var i = 0; i < _logViewHistory.Count; i++) {
 				newHeight += _logViewHistory[i].Height;
 			}
 
 			_logLayout.sizeDelta = new Vector2(_logLayout.sizeDelta.x, Mathf.Clamp(newHeight, minHeight, 4096.0f));
 
 			// Offset LogLayout relative to the size it just increased by.
-			float newPosY;
-			float sizeDifferenceY = _logLayout.sizeDelta.y - logLayoutSizeCache.y;
-			newPosY = logLayoutPosCache.y + (sizeDifferenceY * 0.5f);
+			var sizeDifferenceY = _logLayout.sizeDelta.y - logLayoutSizeCache.y;
+			var newPosY = logLayoutPosCache.y + (sizeDifferenceY * 0.5f);
 			_logLayout.localPosition = new Vector3(logLayoutPosCache.x, newPosY, 0.0f);
 		}
-		
+
 		private void FilterUpdated() {
 			for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
 				switch (_logViewHistory[i].ConsoleLog.LogType) {
@@ -309,48 +307,50 @@ namespace Gruel.Obelisk {
 				}
 			}
 		}
-		
+
 		private void ResizeInputContainers() {
-			_commandContainer.sizeDelta = new Vector2(_container.sizeDelta.x * 0.68359375f, 20f);
-			_searchContainer.sizeDelta = new Vector2(_container.sizeDelta.x * 0.3125f, 20f);
+			var sizeDelta = _container.sizeDelta;
+			_commandContainer.sizeDelta = new Vector2(sizeDelta.x * 0.68359375f, 20f);
+			_searchContainer.sizeDelta = new Vector2(sizeDelta.x * 0.3125f, 20f);
 
 			_commandContainer.anchoredPosition = new Vector2(_commandContainer.sizeDelta.x * 0.5f, 0f);
 			_searchContainer.anchoredPosition = new Vector2(-_searchContainer.sizeDelta.x * 0.5f, 0f);
 		}
-		
+
 		private void SearchInputFieldUpdated(InputField inputField) {
 			Search(inputField.text);
 		}
 
 		private void Search(string searchString) {
 			if (string.IsNullOrEmpty(searchString)) {
-				for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
+				for (var i = 0; i < _logViewHistory.Count; i++) {
 					_logViewHistory[i].gameObject.SetActive(true);
 				}
 
 				return;
 			}
 
-			for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
-				string searchStringLower = searchString.ToLowerInvariant();
-				string logStringLower = _logViewHistory[i].ConsoleLog.LogString.ToLowerInvariant();
+			for (var i = 0; i < _logViewHistory.Count; i++) {
+				var searchStringLower = searchString.ToLowerInvariant();
+				var logStringLower = _logViewHistory[i].ConsoleLog.LogString.ToLowerInvariant();
 
 				_logViewHistory[i].gameObject.SetActive(logStringLower.Contains(searchStringLower));
 			}
 		}
-		
-				private void CommandSubmit() {
-			if (string.IsNullOrEmpty(_commandInputField.text) == false) {
-				Console.ExecuteCommand(_commandInputField.text);
-				_commandInputField.text = "";
-				_commandInputField.ActivateInputField();
-				_commandHistoryDelta = 0;
+
+		private void CommandSubmit() {
+			if (string.IsNullOrEmpty(_commandInputField.text)) {
+				return;
 			}
+
+			Console.ExecuteCommand(_commandInputField.text);
+			_commandInputField.text = "";
+			_commandInputField.ActivateInputField();
+			_commandHistoryDelta = 0;
 		}
 
 		private void CommandSetPrevious(int direction) {
-			int commandHistoryCount = Console.ConsoleHistory.CommandHistoryCount;
-			int index = 0;
+			var commandHistoryCount = Console.ConsoleHistory.CommandHistoryCount;
 
 			if (commandHistoryCount > 0) {
 				// Calculate commandHistory Delta.
@@ -361,7 +361,7 @@ namespace Gruel.Obelisk {
 				// Calculate history index.
 				// This is the index of the command we will be accessing.
 				// Needs to be between 0, and commandHistoryCount - 1.
-				index = Mathf.Clamp((commandHistoryCount - 1) - (_commandHistoryDelta - 1), 0, commandHistoryCount - 1);
+				var index = Mathf.Clamp((commandHistoryCount - 1) - (_commandHistoryDelta - 1), 0, commandHistoryCount - 1);
 
 				if (_commandHistoryDelta == 0) {
 					_commandInputField.text = "";
@@ -373,13 +373,13 @@ namespace Gruel.Obelisk {
 		}
 
 		private void CommandAutoComplete() {
-			string input = _commandInputField.text.Trim();
+			var input = _commandInputField.text.Trim();
 
-			if (input == "") {
+			if (string.IsNullOrEmpty(input)) {
 				return;
 			}
 
-			List<ConsoleCommand> commands = Console.GetOrderedCommands().Where(command => command.CommandName.StartsWith(input, StringComparison.CurrentCultureIgnoreCase)).ToList();
+			var commands = Console.GetOrderedCommands().Where(command => command.CommandName.StartsWith(input, StringComparison.CurrentCultureIgnoreCase)).ToList();
 
 			switch (commands.Count) {
 				case 0: {
@@ -389,7 +389,7 @@ namespace Gruel.Obelisk {
 				case 1: {
 					_commandInputField.text = commands[0].CommandName;
 					_commandInputField.MoveTextEnd(false);
-					
+
 					return;
 				}
 
@@ -401,15 +401,15 @@ namespace Gruel.Obelisk {
 		}
 
 		private static void LogAvailableAutoCompleteCommands(List<ConsoleCommand> commands) {
-			StringBuilder stringBuilder = new StringBuilder();
+			var stringBuilder = new StringBuilder();
 
 			foreach (ConsoleCommand command in commands) {
-				stringBuilder.Append(command.CommandName + "\t\t");
+				stringBuilder.Append($"{command.CommandName}\t\t");
 			}
 
 			Console.Log(stringBuilder.ToString(), LogType.Log, false);
 		}
 #endregion Private Methods
-		
+
 	}
 }

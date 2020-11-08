@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Gruel.Obelisk {
 	public class ObeliskStackTrace : MonoBehaviour {
-		
+
 #region Properties
 		public ObeliskColorSet ColorSet {
 			get => _colorSet;
@@ -11,9 +11,9 @@ namespace Gruel.Obelisk {
 				_colorSet = value;
 				ColorSetChanged();
 			}
-		}	
+		}
 #endregion Properties
-		
+
 #region Fields
 		[Header("Main")]
 		[SerializeField] private GameObject _container;
@@ -46,14 +46,14 @@ namespace Gruel.Obelisk {
 			_stackTraceText.text = consoleLog.LogString + "\n\n" + consoleLog.StackTrace;
 			SetEnabled(true);
 			_scrollRect.normalizedPosition = new Vector2(0, 1);
-		}	
+		}
 #endregion Public Methods
 
 #region Private Methods
 		private void Awake() {
 			_closeButton.onClick.AddListener(OnCloseButtonClicked);
 		}
-		
+
 		private void SetEnabled(bool enable) {
 			_container.SetActive(enable);
 		}
@@ -61,7 +61,7 @@ namespace Gruel.Obelisk {
 		private void OnCloseButtonClicked() {
 			SetEnabled(false);
 		}
-		
+
 		private void ColorSetChanged() {
 			// Main.
 			_containerBackgroundImage.color = _colorSet.BackgroundColor;
@@ -79,17 +79,18 @@ namespace Gruel.Obelisk {
 			// Scrollbar.
 			_scrollbarBackgroundImage.color = _colorSet.ScrollbarBackgroundColor;
 
-			var scrollbarColorBlock = new ColorBlock();
-			scrollbarColorBlock.normalColor = _colorSet.ScrollbarSliderColor;
-			scrollbarColorBlock.highlightedColor = _colorSet.ScrollbarSliderHighlightedColor;
-			scrollbarColorBlock.pressedColor = _colorSet.ScrollbarSliderPressedColor;
-			scrollbarColorBlock.colorMultiplier = 1.0f;
+			var scrollbarColorBlock = new ColorBlock {
+				normalColor = _colorSet.ScrollbarSliderColor,
+				highlightedColor = _colorSet.ScrollbarSliderHighlightedColor,
+				pressedColor = _colorSet.ScrollbarSliderPressedColor,
+				colorMultiplier = 1.0f
+			};
 			_scrollbar.colors = scrollbarColorBlock;
 
 			// Content.
 			_stackTraceText.color = _colorSet.StackTraceTextColor;
 		}
 #endregion Private Methods
-		
+
 	}
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Gruel {
 	public class Console : MonoBehaviour {
-		
+
 #region Properties
 		public static bool IsActive => _instance != null && _instance._consoleView.IsActive;
 
@@ -27,34 +27,34 @@ namespace Gruel {
 		/// <summary>
 		/// Tests whether a string is a drive root. e.g. "D:\"
 		/// </summary>
-		private const string RegexDrivePath = @"^\w:(?:\\|\/)?$";
+		private const string REGEX_DRIVE_PATH = @"^\w:(?:\\|\/)?$";
 
 		/// <summary>
 		/// Tests whether a string is a drive root. e.g. "D:\"
 		/// </summary>
-		private static readonly Regex IsDrivePath = new Regex(RegexDrivePath);
-		
+		private static readonly Regex IsDrivePath = new Regex(REGEX_DRIVE_PATH);
+
 		/// <summary>
 		/// Splits a string by spaces, unless surrounded by (unescaped) single or double quotes.
 		/// </summary>
-		private const string RegexStringSplit = @"(""[^""\\]*(?:\\.[^""\\]*)*""|'[^'\\]*(?:\\.[^'\\]*)*'|[\S]+)+";
+		private const string REGEX_STRING_SPLIT = @"(""[^""\\]*(?:\\.[^""\\]*)*""|'[^'\\]*(?:\\.[^'\\]*)*'|[\S]+)+";
 
 		/// <summary>
 		/// Tests whether a string starts and ends with either double or single quotes (not a mix).
 		/// </summary>
-		private const string RegexQuoteWrapped = @"^"".*""$|^'.*'$";
+		private const string REGEX_QUOTE_WRAPPED = @"^"".*""$|^'.*'$";
 
 		/// <summary>
 		/// Tests whether a string starts and ends with either double or single quotes (not a mix).
 		/// </summary>
-		private static readonly Regex IsWrappedInQuotes = new Regex(RegexQuoteWrapped);
-		
+		private static readonly Regex IsWrappedInQuotes = new Regex(REGEX_QUOTE_WRAPPED);
+
 		private static Console _instance;
-		
+
 		private ConsoleView _consoleView;
 		private string _helpTextFormat = "{0} : {1}";
-		
-		private static Dictionary<string, ConsoleCommand> _commands = new Dictionary<string, ConsoleCommand>();
+
+		private static readonly Dictionary<string, ConsoleCommand> _commands = new Dictionary<string, ConsoleCommand>();
 #endregion Fields
 
 #region Public Methods
@@ -81,7 +81,7 @@ namespace Gruel {
 		public static void LogException(string logString) {
 			CreateLog(logString, LogType.Exception, true, false, Color.white, Color.black);
 		}
-		
+
 		public static void AddCommand(string commandName, CommandHandler handler, string helpText) {
 			_commands.Add(commandName.ToLowerInvariant(), new ConsoleCommand(commandName, handler, helpText));
 		}
@@ -89,36 +89,40 @@ namespace Gruel {
 		public static void ExecuteCommand(string command) {
 			ParseCommand(command);
 		}
-		
+
 		public static List<ConsoleCommand> GetOrderedCommands() {
 			return _commands.Values.OrderBy(c => c.CommandName).ToList();
 		}
-		
+
 		public static List<ConsoleLog> GetHistoryConsoleLogs() {
 			return ConsoleHistory.LogHistory;
 		}
-		
+
 		public static string GetHistoryString(bool stripRichText = false) {
 			var history = GetHistoryConsoleLogs();
 			var stringBuilder = new StringBuilder();
 
-			foreach (ConsoleLog log in history) {
+			foreach (var log in history) {
 				stringBuilder.AppendLine(log.LogString.Trim());
-				if (log.StackTrace != "") { stringBuilder.AppendLine(log.StackTrace.Trim()); }
+				if (log.StackTrace != "") {
+					stringBuilder.AppendLine(log.StackTrace.Trim());
+				}
 
 				stringBuilder.Append(Environment.NewLine);
 			}
 
-			return (stripRichText ? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty) : stringBuilder.ToString()).Trim();
+			return (stripRichText
+				? Regex.Replace(stringBuilder.ToString(), "<.*?>", string.Empty)
+				: stringBuilder.ToString()).Trim();
 		}
-		
+
 		/// <summary>
 		/// Copy console history to the clipboard (<see cref="GUIUtility.systemCopyBuffer"/>).
 		/// </summary>
 		public static void CopyHistoryToClipboard(bool stripRichText = false) {
 			GUIUtility.systemCopyBuffer = GetHistoryString(stripRichText);
 		}
-		
+
 		public static void ClearConsoleView() {
 			_instance._consoleView.ClearConsoleView();
 		}
@@ -128,7 +132,7 @@ namespace Gruel {
 				Log(string.Format(_instance._helpTextFormat, command.CommandName, command.HelpText), LogType.Log, false);
 			}
 		}
-		
+
 		/// <summary>
 		/// Save console history to a log file and return the file's path.
 		/// </summary>
@@ -145,19 +149,19 @@ namespace Gruel {
 
 			if (IsDrivePath.IsMatch(path)) {
 				if (Directory.GetLogicalDrives().All(drive => !drive.Equals(path, StringComparison.CurrentCultureIgnoreCase))) {
-					LogError(string.Format("Drive not found: {0}", path));
+					LogError($"Drive not found: {path}");
 
 					throw new Exception("Drive not found");
 				}
 
 				path = string.Format("{0}:", path[0]);
 			} else if (Directory.Exists(Path.GetDirectoryName(path)) == false) {
-				LogError(string.Format("Directory not found: {0}", path));
+				LogError($"Directory not found: {path}");
 
 				throw new Exception("Directory not found");
 			}
 
-			path = string.Format("{0}/{1}_{2:yyyy-MM-dd_HH-mm-ss}.log", path, prefix, DateTime.Now);
+			path = $"{path}/{prefix}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
 			File.WriteAllText(path, GetHistoryString(stripRichText));
 
 			return path.Replace("\\", "/");
@@ -176,7 +180,7 @@ namespace Gruel {
 
 			// Instantiate view.
 			InstantiateView();
-			
+
 			// Set dont destroy on load to this object.
 			if (_config.DontDestroyOnLoad) {
 				DontDestroyOnLoad(gameObject);
@@ -195,14 +199,13 @@ namespace Gruel {
 		private void OnDestroy() {
 			Application.logMessageReceived -= HandleUnityLog;
 		}
-		
+
 		private void InstantiateView() {
 			if (_config.InstantiateView) {
-				_consoleView = Instantiate(_config.ViewPrefab);
-				_consoleView.transform.SetParent(transform, false);
+				_consoleView = Instantiate(_config.ViewPrefab, transform, false);
 			}
 		}
-		
+
 		private static void CreateLog(
 			string logString,LogType logType, bool doStackTrace, bool customColor, Color textColor, Color bgColor) {
 			var stackTrace = doStackTrace ? new System.Diagnostics.StackTrace().ToString() : string.Empty;
@@ -214,36 +217,36 @@ namespace Gruel {
 			var newLog = new ConsoleLog(logString, stackTrace, logType, false, Color.white, Color.black);
 			ConsoleHistory.AddLog(newLog);
 		}
-		
+
 		private static void ParseCommand(string commandString) {
 			ConsoleHistory.AddCommandHistory(commandString);
 
 			commandString = commandString.Trim();
 
-			List<string> cmdSplit = ParseArguments(commandString);
+			var cmdSplit = ParseArguments(commandString);
 
-			string cmdName = cmdSplit[0].ToLower();
+			var cmdName = cmdSplit[0].ToLower();
 			cmdSplit.RemoveAt(0);
 
-			ConsoleLog newLog = new ConsoleLog("> " + commandString, "", LogType.Log, false, Color.white, Color.black);
+			var newLog = new ConsoleLog("> " + commandString, "", LogType.Log, false, Color.white, Color.black);
 			ConsoleHistory.AddLog(newLog);
 
 			try {
 				_commands[cmdName].Handler(cmdSplit.ToArray());
 			}
 			catch (KeyNotFoundException) {
-				LogError(String.Format("Command \"{0}\" not found.", cmdName));
+				LogError($"Command \"{cmdName}\" not found.");
 			}
 			catch (Exception) {
-				
+
 			}
 		}
 
 		private static List<string> ParseArguments(string commandString) {
 			var args = new List<string>();
 
-			foreach (Match match in Regex.Matches(commandString, RegexStringSplit)) {
-				string value = match.Value.Trim();
+			foreach (Match match in Regex.Matches(commandString, REGEX_STRING_SPLIT)) {
+				var value = match.Value.Trim();
 
 				if (IsWrappedInQuotes.IsMatch(value)) { value = value.Substring(1, value.Length - 2); }
 
@@ -252,7 +255,7 @@ namespace Gruel {
 
 			return args;
 		}
-		
+
 		private void HandleUnityLog(string logString, string stackTrace, LogType logType) {
 			switch (logType) {
 				case LogType.Error:
@@ -281,11 +284,11 @@ namespace Gruel {
 					}
 					break;
 			}
-			
+
 			CreateLog(logString, stackTrace, logType);
-			
+
 		}
 #endregion Private Methods
-		
+
 	}
 }

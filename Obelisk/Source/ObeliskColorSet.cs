@@ -4,51 +4,32 @@ using UnityEngine;
 namespace Gruel.Obelisk {
 	[CreateAssetMenu(menuName = "Gruel/Console/Obelisk ColorSet Asset", fileName = "ObeliskColorSet_")]
 	public class ObeliskColorSet : ScriptableObject {
-		
+
 #region Properties
 		// General.
 		public Color IconBackgroundColor => _iconBackgroundColor;
-
 		public Color IconColor => _iconColor;
-
 		public Color IconDisabledColor => _iconDisabledColor;
-
 		public Color ButtonColor => _buttonColor;
-
 		public Color StackTraceTextColor => _stackTraceTextColor;
 
 		// Main.
 		public Color BackgroundColor => _backgroundColor;
-
 		public Color OutlineColor => _outlineColor;
 
 		// Titlebar.
 		public Color TitlebarBackgroundColor => _titlebarBackgroundColor;
-
 		public Color TitlebarTextColor => _titlebarTextColor;
 
 		// Scrollbar.
 		public Color ScrollbarBackgroundColor => _scrollbarBackgroundColor;
-
 		public Color ScrollbarSliderColor => _scrollbarSliderColor;
-
 		public Color ScrollbarSliderHighlightedColor => _scrollbarSliderHighlightedColor;
-
 		public Color ScrollbarSliderPressedColor => _scrollbarSliderPressedColor;
 
 		// Input.
 		public Color InputContainerBackgroundColor => _inputContainerBackgroundColor;
-
 		public Color InputTextColor => _inputTextColor;
-
-		// Text.
-		public Color LogTextColor(LogType logType) {
-			return _logTextColor[logType];
-		}
-
-		public Color LogBackgroundColor(LogType logType) {
-			return _logBackgroundColor[logType];
-		}
 #endregion Properties
 
 #region Fields
@@ -91,12 +72,19 @@ namespace Gruel.Obelisk {
 		[SerializeField] private Color _logBackgroundWarningColor;
 		[SerializeField] private Color _logBackgroundLogColor;
 		[SerializeField] private Color _logBackgroundExceptionColor;
-		
+
 		private Dictionary<LogType, Color> _logTextColor = new Dictionary<LogType, Color>();
 		private Dictionary<LogType, Color> _logBackgroundColor = new Dictionary<LogType, Color>();
 #endregion Fields
 
 #region Public Methods
+		public Color GetLogTextColor(LogType logType) {
+			return _logTextColor[logType];
+		}
+
+		public Color GetLogBackgroundColor(LogType logType) {
+			return _logBackgroundColor[logType];
+		}
 #endregion Public Methods
 
 #region Private Methods
@@ -114,6 +102,6 @@ namespace Gruel.Obelisk {
 			_logBackgroundColor.Add(LogType.Exception, _logBackgroundExceptionColor);
 		}
 #endregion Private Methods
-		
+
 	}
 }

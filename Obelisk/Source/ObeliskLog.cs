@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Gruel.Obelisk {
 	public class ObeliskLog : MonoBehaviour {
-		
+
 #region Properties
 		public ConsoleLog ConsoleLog { get; private set; }
 		public float Height => _rectTransform.sizeDelta.y;
@@ -17,7 +17,7 @@ namespace Gruel.Obelisk {
 		[SerializeField] private GameObject _stackTraceGameObject;
 		[SerializeField] private Image _stackTraceImage;
 
-		private const float HeightIncrement = 20.0f;
+		private const float HEIGHT_INCREMENT = 20.0f;
 
 		private ObeliskConsole _obeliskConsole;
 		private ObeliskColorSet _colorSet;
@@ -27,11 +27,11 @@ namespace Gruel.Obelisk {
 		public void Init(ObeliskConsole obeliskConsole, ObeliskColorSet colorSet) {
 			_obeliskConsole = obeliskConsole;
 			_colorSet = colorSet;
-			
+
 			_stackTraceImage.color = _colorSet.IconColor;
 			_button.onClick.AddListener(OnButtonClicked);
 		}
-		
+
 		public void SetLog(ref ConsoleLog log) {
 			ConsoleLog = log;
 
@@ -51,7 +51,7 @@ namespace Gruel.Obelisk {
 
 #region Private Methods
 		private void OnButtonClicked() {
-			if (ConsoleLog.StackTrace == "") {
+			if (string.IsNullOrEmpty(ConsoleLog.StackTrace)) {
 				return;
 			}
 
@@ -59,21 +59,21 @@ namespace Gruel.Obelisk {
 		}
 
 		private void OnRectTransformDimensionsChange() {
-			var heightMultiple = Mathf.Ceil(_text.preferredHeight / HeightIncrement);
-			var newHeight = heightMultiple * HeightIncrement;
+			var heightMultiple = Mathf.Ceil(_text.preferredHeight / HEIGHT_INCREMENT);
+			var newHeight = heightMultiple * HEIGHT_INCREMENT;
 
 			_rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, newHeight);
 		}
 
 		private void SetColors(LogType logType) {
-			var backgroundColor = _colorSet.LogBackgroundColor(logType);
+			var backgroundColor = _colorSet.GetLogBackgroundColor(logType);
 
 			if ((transform.parent.childCount % 2) == 0) {
 				backgroundColor += new Color(0.015f, 0.015f, 0.015f, 1.0f);
 			}
 
 			_background.color = backgroundColor;
-			_text.color = _colorSet.LogTextColor(logType);
+			_text.color = _colorSet.GetLogTextColor(logType);
 		}
 
 		private void SetColors(Color textColor, Color backgroundColor) {
@@ -81,6 +81,6 @@ namespace Gruel.Obelisk {
 			_text.color = textColor;
 		}
 #endregion Private Methods
-		
+
 	}
 }

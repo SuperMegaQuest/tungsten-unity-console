@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Gruel {
 	public static class ConsoleCoreCommands {
-		
+
 #region Public Methods
 		public static void AddCoreCommands() {
 			Console.AddCommand("Console.Log", ConsoleLog, "Display message to console.");
@@ -22,7 +22,7 @@ namespace Gruel {
 
 #region Private Methods
 		private static void ConsoleLog(string[] args) {
-			string output = "";
+			var output = "";
 			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
@@ -31,7 +31,7 @@ namespace Gruel {
 		}
 
 		private static void ConsoleLogWarning(string[] args) {
-			string output = "";
+			var output = "";
 			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
@@ -40,7 +40,7 @@ namespace Gruel {
 		}
 
 		private static void ConsoleLogError(string[] args) {
-			string output = "";
+			var output = "";
 			for (int i = 0, n = args.Length; i < n; i++) {
 				output += args[i] + " ";
 			}
@@ -49,7 +49,7 @@ namespace Gruel {
 		}
 
 		private static void ConsoleSave(string[] args) {
-			Console.Log(string.Format("Saved to {0}", Console.SaveHistoryToLogFile((args == null || args.Length == 0) ? "" : args[0])));
+			Console.Log($"Saved to {Console.SaveHistoryToLogFile((args == null || args.Length == 0) ? "" : args[0])}");
 		}
 
 		private static void ConsoleCopy(string[] args) {
@@ -63,29 +63,29 @@ namespace Gruel {
 		private static void Help(string[] args) {
 			Console.PrintHelpText();
 		}
-		
+
 		private static void DebugLog(string[] args) {
-			string output = "";
+			var output = "";
 			for (int i = 0, n = args.Length; i < n; i++) {
-				output += args[i] + " ";
+				output += $"{args[i]} ";
 			}
 
 			Debug.Log(output);
 		}
 
 		private static void DebugLogWarning(string[] args) {
-			string output = "";
+			var output = "";
 			for (int i = 0, n = args.Length; i < n; i++) {
-				output += args[i] + " ";
+				output += $"{args[i]} ";
 			}
 
 			Debug.LogWarning(output);
 		}
 
 		private static void DebugLogError(string[] args) {
-			string output = "";
+			var output = "";
 			for (int i = 0, n = args.Length; i < n; i++) {
-				output += args[i] + " ";
+				output += $"{args[i]} ";
 			}
 
 			Debug.LogError(output);
@@ -95,6 +95,6 @@ namespace Gruel {
 			Debug.Break();
 		}
 #endregion Private Methods
-		
+
 	}
 }
