@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gruel {
+namespace Monolith {
 public class ConsoleLog {
 
 #region Constructor

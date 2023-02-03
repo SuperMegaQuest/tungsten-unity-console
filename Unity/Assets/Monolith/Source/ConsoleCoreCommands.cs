@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gruel {
+namespace Monolith {
 public static class ConsoleCoreCommands {
 
 #region Public Methods

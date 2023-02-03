@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Gruel.Obelisk {
-public class ObeliskStackTrace : MonoBehaviour {
+namespace Monolith.UGUI {
+public class StackTrace : MonoBehaviour {
 
 #region Properties
-    public ObeliskColorSet ColorSet {
+    public ColorSet ColorSet {
         get => _colorSet;
         set {
             _colorSet = value;
@@ -49,7 +49,7 @@ public class ObeliskStackTrace : MonoBehaviour {
     [Header("Content"), SerializeField,]
     private Text _stackTraceText;
 
-    private ObeliskColorSet _colorSet;
+    private ColorSet _colorSet;
 #endregion Fields
 
 #region Private Methods

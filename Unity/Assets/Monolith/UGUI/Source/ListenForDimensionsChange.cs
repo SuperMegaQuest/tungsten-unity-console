@@ -2,7 +2,7 @@ using System;
 
 using UnityEngine;
 
-namespace Gruel.Obelisk {
+namespace Monolith.UGUI {
 public class ListenForDimensionsChange : MonoBehaviour {
 
 #region Fields

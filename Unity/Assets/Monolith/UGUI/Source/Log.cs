@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Gruel.Obelisk {
-public class ObeliskLog : MonoBehaviour {
+namespace Monolith.UGUI {
+public class Log : MonoBehaviour {
 
 #region Properties
     public ConsoleLog ConsoleLog { get; private set; }
@@ -19,13 +19,13 @@ public class ObeliskLog : MonoBehaviour {
 
     private const float HEIGHT_INCREMENT = 20.0f;
 
-    private ObeliskConsole _obeliskConsole;
-    private ObeliskColorSet _colorSet;
+    private Console _console;
+    private ColorSet _colorSet;
 #endregion Fields
 
 #region Public Methods
-    public void Init(ObeliskConsole obeliskConsole, ObeliskColorSet colorSet) {
-        _obeliskConsole = obeliskConsole;
+    public void Init(Console console, ColorSet colorSet) {
+        _console = console;
         _colorSet = colorSet;
 
         _stackTraceImage.color = _colorSet.IconColor;
@@ -56,7 +56,7 @@ public class ObeliskLog : MonoBehaviour {
             return;
         }
 
-        _obeliskConsole.OpenStackTraceForLog(ConsoleLog);
+        _console.OpenStackTraceForLog(ConsoleLog);
     }
 
     private void OnRectTransformDimensionsChange() {

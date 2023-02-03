@@ -1,7 +1,7 @@
 using UnityEngine;
 
-namespace Gruel.Obelisk {
-public class ObeliskDrag : MonoBehaviour {
+namespace Monolith.UGUI {
+public class Dragger : MonoBehaviour {
 
 #region Fields
     [SerializeField] private Transform _container;

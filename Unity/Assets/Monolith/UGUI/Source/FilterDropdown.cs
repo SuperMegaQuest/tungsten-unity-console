@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Gruel.Obelisk {
-public class ObeliskFilterDropdown : MonoBehaviour {
+namespace Monolith.UGUI {
+public class FilterDropdown : MonoBehaviour {
 
 #region Properties
-    public ObeliskColorSet ColorSet {
+    public ColorSet ColorSet {
         get => _colorSet;
         set {
             _colorSet = value;
@@ -63,7 +63,7 @@ public class ObeliskFilterDropdown : MonoBehaviour {
     [SerializeField] private Image _exceptionToggleIconBackgroundImage;
 
     private bool _dropdownActive;
-    private ObeliskColorSet _colorSet;
+    private ColorSet _colorSet;
 
     private readonly Dictionary<LogType, bool> _filterSettings = new() {
         { LogType.Error, false },

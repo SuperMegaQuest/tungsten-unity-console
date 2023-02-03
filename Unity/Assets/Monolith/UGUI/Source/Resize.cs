@@ -1,7 +1,7 @@
 using UnityEngine;
 
-namespace Gruel.Obelisk {
-public class ObeliskResize : MonoBehaviour {
+namespace Monolith.UGUI {
+public class Resize : MonoBehaviour {
 
 #region Fields
     [SerializeField] private RectTransform _container;

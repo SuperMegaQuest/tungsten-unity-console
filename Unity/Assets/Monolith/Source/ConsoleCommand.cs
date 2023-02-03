@@ -1,4 +1,4 @@
-﻿namespace Gruel {
+﻿namespace Monolith {
 
 /// <summary>
 ///     Contains information about each command.

@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 222157763057941984}
   - component: {fileID: 114459954850255048}
   m_Layer: 5
-  m_Name: ObeliskLog
+  m_Name: Log
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

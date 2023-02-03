@@ -10,7 +10,7 @@ using UnityEngine;
 
 using Debug = UnityEngine.Debug;
 
-namespace Gruel {
+namespace Monolith {
 public class Console : MonoBehaviour {
 
 #region Properties

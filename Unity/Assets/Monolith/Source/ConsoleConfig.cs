@@ -1,7 +1,7 @@
 using UnityEngine;
 
-namespace Gruel {
-[CreateAssetMenu(menuName = "Gruel/Console/Console Config Asset", fileName = "ConsoleConfig")]
+namespace Monolith {
+[CreateAssetMenu(menuName = "Monolith/Console/Console Config Asset", fileName = "ConsoleConfig")]
 public class ConsoleConfig : ScriptableObject {
 
 #region Properties

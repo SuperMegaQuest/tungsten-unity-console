@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gruel {
+namespace Monolith {
 public abstract class ConsoleView : MonoBehaviour {
 
 #region Properties

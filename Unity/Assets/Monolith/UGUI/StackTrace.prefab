@@ -216,7 +216,7 @@ GameObject:
   - component: {fileID: 114963487590792150}
   - component: {fileID: 114403848292018286}
   m_Layer: 5
-  m_Name: ObeliskStackTrace
+  m_Name: StackTrace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

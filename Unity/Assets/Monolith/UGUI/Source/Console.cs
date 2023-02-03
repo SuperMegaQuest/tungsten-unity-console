@@ -5,10 +5,11 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Gruel.Obelisk {
-public class ObeliskConsole : ConsoleView {
+namespace Monolith.UGUI {
+public class Console : ConsoleView {
 
 #region Properties
     public override bool IsActive { get; protected set; }
@@ -34,7 +35,7 @@ public class ObeliskConsole : ConsoleView {
     [SerializeField] private Image _closeButtonIconImage;
 
     [Header("Filter"), SerializeField,]
-    private ObeliskFilterDropdown _filterDropdown;
+    private FilterDropdown _filterDropdown;
 
     [Header("Log"), SerializeField,]
     private ScrollRect _scrollRect;
@@ -67,19 +68,19 @@ public class ObeliskConsole : ConsoleView {
     [Header("Settings"), SerializeField,]
     private int _logViewHistoryMax = 64;
 
-    [Header("Obelisk Prefabs"), SerializeField,]
-    private ObeliskLog _obeliskLogPrefab;
+    [FormerlySerializedAs("_obeliskLogPrefab"),Header("Obelisk Prefabs"), SerializeField,]
+    private Log logPrefab;
 
-    [SerializeField] private ObeliskStackTrace _obeliskStackTracePrefab;
+    [FormerlySerializedAs("_obeliskStackTracePrefab"),SerializeField] private StackTrace stackTracePrefab;
 
     [Header("Obelisk Color Set"), Tooltip("Color set objects.\nMust be in same order as DefaultViewColorSetName enum."),
      SerializeField,]
-    private ObeliskColorSet _colorSetAsset;
+    private ColorSet _colorSetAsset;
 
-    private readonly List<ObeliskLog> _logViewHistory = new();
-    private readonly Queue<ObeliskLog> _obeliskLogPool = new();
-    private ObeliskStackTrace _obeliskStackTrace;
-    private ObeliskColorSet _instantiatedColorSet;
+    private readonly List<Log> _logViewHistory = new();
+    private readonly Queue<Log> _obeliskLogPool = new();
+    private StackTrace _stackTrace;
+    private ColorSet _instantiatedColorSet;
 
     private int _commandHistoryDelta;
 #endregion Fields
@@ -98,7 +99,7 @@ public class ObeliskConsole : ConsoleView {
     }
 
     public void OpenStackTraceForLog(ConsoleLog consoleLog) {
-        _obeliskStackTrace.Open(consoleLog);
+        _stackTrace.Open(consoleLog);
     }
 #endregion Public Methods
 
@@ -128,8 +129,8 @@ public class ObeliskConsole : ConsoleView {
         ApplyColorSet();
 
         // StackTrace window.
-        _obeliskStackTrace = Instantiate(_obeliskStackTracePrefab, transform.parent, false);
-        _obeliskStackTrace.ColorSet = _instantiatedColorSet;
+        _stackTrace = Instantiate(stackTracePrefab, transform.parent, false);
+        _stackTrace.ColorSet = _instantiatedColorSet;
     }
 
     private void Update() {
@@ -233,19 +234,19 @@ public class ObeliskConsole : ConsoleView {
         var obeliskLog = _obeliskLogPool.Dequeue();
         obeliskLog.transform.SetParent(_logLayout, false);
 
-        var consoleLog = Console.ConsoleHistory.LatestLog;
+        var consoleLog = Monolith.Console.ConsoleHistory.LatestLog;
         obeliskLog.SetLog(ref consoleLog);
 
         AddLogViewHistory(obeliskLog);
     }
 
-    private void AddLogViewHistory(ObeliskLog obeliskLog) {
+    private void AddLogViewHistory(Log log) {
         if (_logViewHistory.Count >= _logViewHistoryMax) {
             PoolLog(_logViewHistory[0]);
             _logViewHistory.RemoveAt(0);
         }
 
-        _logViewHistory.Add(obeliskLog);
+        _logViewHistory.Add(log);
 
         ResizeLogLayout();
 
@@ -254,15 +255,15 @@ public class ObeliskConsole : ConsoleView {
 
     private void FillPool() {
         for (var i = 0; i < _logViewHistoryMax + 1; i++) {
-            var log = Instantiate(_obeliskLogPrefab, _obeliskLogPoolContainer, false);
+            var log = Instantiate(logPrefab, _obeliskLogPoolContainer, false);
             log.Init(this, _instantiatedColorSet);
             _obeliskLogPool.Enqueue(log);
         }
     }
 
-    private void PoolLog(ObeliskLog obeliskLog) {
-        obeliskLog.transform.SetParent(_obeliskLogPoolContainer, false);
-        _obeliskLogPool.Enqueue(obeliskLog);
+    private void PoolLog(Log log) {
+        log.transform.SetParent(_obeliskLogPoolContainer, false);
+        _obeliskLogPool.Enqueue(log);
     }
 
     private void ResizeLogLayout() {
@@ -350,14 +351,14 @@ public class ObeliskConsole : ConsoleView {
             return;
         }
 
-        Console.ExecuteCommand(_commandInputField.text);
+        Monolith.Console.ExecuteCommand(_commandInputField.text);
         _commandInputField.text = "";
         _commandInputField.ActivateInputField();
         _commandHistoryDelta = 0;
     }
 
     private void CommandSetPrevious(int direction) {
-        var commandHistoryCount = Console.ConsoleHistory.CommandHistoryCount;
+        var commandHistoryCount = Monolith.Console.ConsoleHistory.CommandHistoryCount;
 
         if (commandHistoryCount > 0) {
             // Calculate commandHistory Delta.
@@ -374,7 +375,7 @@ public class ObeliskConsole : ConsoleView {
                 _commandInputField.text = "";
             }
             else {
-                _commandInputField.text = Console.ConsoleHistory.GetCommandHistoryWithIndex(index);
+                _commandInputField.text = Monolith.Console.ConsoleHistory.GetCommandHistoryWithIndex(index);
                 _commandInputField.caretPosition = _commandInputField.text.Length;
             }
         }
@@ -387,10 +388,10 @@ public class ObeliskConsole : ConsoleView {
             return;
         }
 
-        var commands = Console.GetOrderedCommands().Where(command =>
-                                                              command.CommandName.StartsWith(
-                                                                  input, StringComparison.CurrentCultureIgnoreCase))
-                              .ToList();
+        var commands = Monolith.Console.GetOrderedCommands().Where(command =>
+                                                                       command.CommandName.StartsWith(
+                                                                           input, StringComparison.CurrentCultureIgnoreCase))
+                               .ToList();
 
         switch (commands.Count) {
             case 0: {
@@ -418,7 +419,7 @@ public class ObeliskConsole : ConsoleView {
             stringBuilder.Append($"{command.CommandName}\t\t");
         }
 
-        Console.Log(stringBuilder.ToString(), LogType.Log, false);
+        Monolith.Console.Log(stringBuilder.ToString(), LogType.Log, false);
     }
 #endregion Private Methods
 

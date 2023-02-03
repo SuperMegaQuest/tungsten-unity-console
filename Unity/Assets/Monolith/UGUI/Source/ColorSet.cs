@@ -2,9 +2,9 @@
 
 using UnityEngine;
 
-namespace Gruel.Obelisk {
-[CreateAssetMenu(menuName = "Gruel/Console/Obelisk ColorSet Asset", fileName = "ObeliskColorSet_")]
-public class ObeliskColorSet : ScriptableObject {
+namespace Monolith.UGUI {
+[CreateAssetMenu(menuName = "Monolith/Console/Obelisk ColorSet Asset", fileName = "ObeliskColorSet_")]
+public class ColorSet : ScriptableObject {
 
 #region Private Methods
     private void Awake() {
