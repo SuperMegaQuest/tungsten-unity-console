@@ -3,6 +3,7 @@
 /// <summary>
 ///     Contains information about each command.
 /// </summary>
+///  TODO: Should could probably be a struct.
 public class ConsoleCommand {
 
 #region Constructor

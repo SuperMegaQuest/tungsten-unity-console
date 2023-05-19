@@ -210,9 +210,8 @@ public class Console : MonoBehaviour {
     }
 
     private void InstantiateView() {
-        if (_config.InstantiateView) {
-            _consoleView = Instantiate(_config.ViewPrefab, transform, false);
-        }
+        _consoleView = Instantiate(_config.ViewPrefab, transform, false);
+        Instantiate(_config.WebViewPrefab, transform, false);
     }
 
     private static void CreateLog(
@@ -285,6 +284,7 @@ public class Console : MonoBehaviour {
                 }
 
                 break;
+            default:
             case LogType.Log:
                 if (_config.LogUnityLogs == false) {
                     return;
