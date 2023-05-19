@@ -1,0 +1,16 @@
+{
+  "name": "webconsole",
+  "version": "1.0.0",
+  "description": "",
+  "main": "source/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && node copy-assets.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "fs-extra": "^11.1.1",
+    "typescript": "^5.0.4"
+  }
+}
