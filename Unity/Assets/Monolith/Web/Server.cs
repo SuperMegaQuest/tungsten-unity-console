@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
+
+using Newtonsoft.Json;
 
 using UnityEngine;
 
@@ -35,16 +38,27 @@ public class Server : MonoBehaviour {
                 HttpListenerRequest request = context.Request;
                 HttpListenerResponse response = context.Response;
 
-                string requestedPath = request.Url.AbsolutePath;
-                string filePath = Path.Combine(_dataPath, requestedPath.TrimStart('/'));
+                switch (request.HttpMethod) {
+                    case "GET": {
+                        string requestedPath = request.Url.AbsolutePath;
+                        string filePath = Path.Combine(_dataPath, requestedPath.TrimStart('/'));
 
-                if (File.Exists(filePath)) {
-                    ServeFile(response, filePath);
-                }
-                else {
-                    response.StatusCode = 404;
-                    response.StatusDescription = "File not found.";
-                    response.Close();
+                        if (File.Exists(filePath)) {
+                            ServeFile(response, filePath);
+                        }
+                        else {
+                            response.StatusCode = 404;
+                            response.StatusDescription = "File not found.";
+                            response.Close();
+                        }
+
+                        break;
+                    }
+
+                    case "POST": {
+                        HandlePostRequest(request);
+                        break;
+                    }
                 }
             }
             catch (HttpListenerException) {
@@ -67,6 +81,14 @@ public class Server : MonoBehaviour {
         Stream output = response.OutputStream;
         output.Write(fileBytes, 0, fileBytes.Length);
         output.Close();
+    }
+
+    private void HandlePostRequest(HttpListenerRequest request) {
+        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) {
+            string content = reader.ReadToEnd();
+            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+            Debug.Log($"Received POST request: {data["text"]}");
+        }
     }
 
     private static string GetMimeType(string filePath) {
