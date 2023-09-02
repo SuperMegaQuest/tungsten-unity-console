@@ -14,10 +14,8 @@ public static class ConsoleCoreCommands {
         Console.AddCommand("Help", Help, "List of commands and their help text");
 
         Console.AddCommand("Debug.Log", DebugLog, "Logs message to the Unity Console.");
-        Console.AddCommand("Debug.LogWarning", DebugLogWarning,
-                           "A variant of Debug.Log that logs a warning message to the console.");
-        Console.AddCommand("Debug.LogError", DebugLogError,
-                           "A variant of Debug.Log that logs an error message to the console.");
+        Console.AddCommand("Debug.LogWarning", DebugLogWarning, "A variant of Debug.Log that logs a warning message to the console.");
+        Console.AddCommand("Debug.LogError", DebugLogError, "A variant of Debug.Log that logs an error message to the console.");
         Console.AddCommand("Debug.Break", DebugBreak, "Pauses the editor.");
     }
 #endregion Public Methods

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 
 using Newtonsoft.Json;
@@ -14,6 +15,10 @@ public class Server : MonoBehaviour {
     private Thread _listenerThread;
     private string _dataPath;
 
+    private Dictionary<string, HttpListenerResponse> _eventStreams = new();
+
+    // private float _last = 0.0f;
+
     private void Start() {
         _dataPath = $"{Application.dataPath}/www";
 
@@ -24,7 +29,23 @@ public class Server : MonoBehaviour {
         _listenerThread.Start();
     }
 
+    private void OnDestroy() {
+        Cleanup();
+    }
+
     private void OnApplicationQuit() {
+        Cleanup();
+    }
+
+    // private void Update() {
+    //     _last += Time.deltaTime;
+    //     if (_last >= 5.0f) {
+    //         SendMessage($"Hello, world! {_last.ToString()}");
+    //         _last = 0.0f;
+    //     }
+    // }
+
+    private void Cleanup() {
         _listener.Stop();
         _listenerThread.Abort();
     }
@@ -43,7 +64,10 @@ public class Server : MonoBehaviour {
                         string requestedPath = request.Url.AbsolutePath;
                         string filePath = Path.Combine(_dataPath, requestedPath.TrimStart('/'));
 
-                        if (File.Exists(filePath)) {
+                        if (requestedPath == "/api/console") {
+                            ServeConsoleData(response);
+                        }
+                        else if (File.Exists(filePath)) {
                             ServeFile(response, filePath);
                         }
                         else {
@@ -91,6 +115,17 @@ public class Server : MonoBehaviour {
         }
     }
 
+    private void ServeConsoleData(HttpListenerResponse response) {
+        const string consoleData = @"{ ""data"": ""Hello from Unity"" }";
+
+        byte[] buffer = Encoding.UTF8.GetBytes(consoleData);
+        response.ContentLength64 = buffer.Length;
+
+        Stream output = response.OutputStream;
+        output.Write(buffer, 0, buffer.Length);
+        output.Close();
+    }
+
     private static string GetMimeType(string filePath) {
         string extension = Path.GetExtension(filePath).ToLower();
         return extension switch {
@@ -100,5 +135,14 @@ public class Server : MonoBehaviour {
             _ => "application/octet-stream",
         };
     }
+
+    // private void SendMessage(string message) {
+    //     byte[] data = Encoding.UTF8.GetBytes($"data: {message}\n\n");
+    //
+    //     foreach (HttpListenerResponse response in _eventStreams.Values) {
+    //         response.OutputStream.Write(data, 0, data.Length);
+    //         response.OutputStream.Flush();
+    //     }
+    // }
 
 }
