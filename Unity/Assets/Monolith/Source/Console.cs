@@ -7,14 +7,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 using UnityEngine;
-
 using Debug = UnityEngine.Debug;
 
 namespace Monolith {
 public class Console : MonoBehaviour {
 
 #region Properties
-    public static bool IsActive => _instance != null && _instance._consoleView.IsActive;
+    public static bool IsActive => _instance != null;
 
     public static ConsoleHistory ConsoleHistory => _instance._config.ConsoleHistory;
 
@@ -25,37 +24,38 @@ public class Console : MonoBehaviour {
 #endregion Properties
 
 #region Fields
-    [Header("Console Config"), SerializeField,]
-    private ConsoleConfig _config;
+    [Header("Console Config")]
+    [SerializeField] private ConsoleConfig _config;
 
     /// <summary>
-    ///     Tests whether a string is a drive root. e.g. "D:\"
+    /// Tests whether a string is a drive root. e.g. "D:\"
     /// </summary>
     private const string REGEX_DRIVE_PATH = @"^\w:(?:\\|\/)?$";
 
     /// <summary>
-    ///     Tests whether a string is a drive root. e.g. "D:\"
+    /// Tests whether a string is a drive root. e.g. "D:\"
     /// </summary>
     private static readonly Regex IsDrivePath = new(REGEX_DRIVE_PATH);
 
     /// <summary>
-    ///     Splits a string by spaces, unless surrounded by (unescaped) single or double quotes.
+    /// Splits a string by spaces, unless surrounded by (unescaped) single or double quotes.
     /// </summary>
     private const string REGEX_STRING_SPLIT = @"(""[^""\\]*(?:\\.[^""\\]*)*""|'[^'\\]*(?:\\.[^'\\]*)*'|[\S]+)+";
 
     /// <summary>
-    ///     Tests whether a string starts and ends with either double or single quotes (not a mix).
+    /// Tests whether a string starts and ends with either double or single quotes (not a mix).
     /// </summary>
     private const string REGEX_QUOTE_WRAPPED = @"^"".*""$|^'.*'$";
 
     /// <summary>
-    ///     Tests whether a string starts and ends with either double or single quotes (not a mix).
+    /// Tests whether a string starts and ends with either double or single quotes (not a mix).
     /// </summary>
     private static readonly Regex IsWrappedInQuotes = new(REGEX_QUOTE_WRAPPED);
 
     private static Console _instance;
 
-    private ConsoleView _consoleView;
+    private ConsoleView[] _views;
+
     private string _helpTextFormat = "{0} : {1}";
 
     private static readonly Dictionary<string, ConsoleCommand> _commands = new();
@@ -95,7 +95,7 @@ public class Console : MonoBehaviour {
     }
 
     public static List<ConsoleCommand> GetOrderedCommands() {
-        return _commands.Values.OrderBy(c => c.CommandName).ToList();
+        return _commands.Values.OrderBy(c => c.commandName).ToList();
     }
 
     public static List<ConsoleLog> GetHistoryConsoleLogs() {
@@ -107,9 +107,9 @@ public class Console : MonoBehaviour {
         var stringBuilder = new StringBuilder();
 
         foreach (var log in history) {
-            stringBuilder.AppendLine(log.LogString.Trim());
-            if (log.StackTrace != "") {
-                stringBuilder.AppendLine(log.StackTrace.Trim());
+            stringBuilder.AppendLine(log.logString.Trim());
+            if (log.stackTrace != "") {
+                stringBuilder.AppendLine(log.stackTrace.Trim());
             }
 
             stringBuilder.Append(Environment.NewLine);
@@ -128,12 +128,14 @@ public class Console : MonoBehaviour {
     }
 
     public static void ClearConsoleView() {
-        _instance._consoleView.ClearConsoleView();
+        for(int i = 0; i < _instance._views.Length; i++) {
+            _instance._views[i].ClearConsoleView();
+        }
     }
 
     public static void PrintHelpText() {
-        foreach (var command in _commands.Values.OrderBy(c => c.CommandName)) {
-            Log(string.Format(_instance._helpTextFormat, command.CommandName, command.HelpText), LogType.Log, false);
+        foreach (var command in _commands.Values.OrderBy(c => c.commandName)) {
+            Log(string.Format(_instance._helpTextFormat, command.commandName, command.helpText), LogType.Log, false);
         }
     }
 
@@ -183,15 +185,15 @@ public class Console : MonoBehaviour {
             _instance = this;
         }
         else {
-            Debug.LogError("Console: There is already an instance of Console!");
+            Debug.LogError("[Tungsten] [Console] there is already an instance of Console!");
             Destroy(gameObject);
         }
 
-        // Instantiate view.
-        InstantiateView();
+        // instantiate front-ends
+        InstantiateViews();
 
         // Set dont destroy on load to this object.
-        if (_config.DontDestroyOnLoad) {
+        if (_config.SurviveSceneChanges) {
             DontDestroyOnLoad(gameObject);
         }
 
@@ -209,9 +211,11 @@ public class Console : MonoBehaviour {
         Application.logMessageReceived -= HandleUnityLog;
     }
 
-    private void InstantiateView() {
-        _consoleView = Instantiate(_config.ViewPrefab, transform, false);
-        Instantiate(_config.WebViewPrefab, transform, false);
+    private void InstantiateViews() {
+        _views = new ConsoleView[_config.Views.Length];
+        for(int i = 0; i < _config.Views.Length; i++) {
+            _views[i] = Instantiate(_config.Views[i], transform, false);
+        }
     }
 
     private static void CreateLog(
@@ -231,7 +235,7 @@ public class Console : MonoBehaviour {
 
         commandString = commandString.Trim();
 
-        var cmdSplit = ParseArguments(commandString);
+        List<string> cmdSplit = ParseArguments(commandString);
 
         var cmdName = cmdSplit[0].ToLower();
         cmdSplit.RemoveAt(0);
@@ -240,7 +244,7 @@ public class Console : MonoBehaviour {
         ConsoleHistory.AddLog(newLog);
 
         try {
-            _commands[cmdName].Handler(cmdSplit.ToArray());
+            _commands[cmdName].handler(cmdSplit.ToArray());
         }
         catch (KeyNotFoundException) {
             LogError($"Command \"{cmdName}\" not found.");
@@ -249,7 +253,7 @@ public class Console : MonoBehaviour {
     }
 
     private static List<string> ParseArguments(string commandString) {
-        var args = new List<string>();
+        List<string> args = new();
 
         foreach (Match match in Regex.Matches(commandString, REGEX_STRING_SPLIT)) {
             var value = match.Value.Trim();

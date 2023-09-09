@@ -16,7 +16,7 @@ public class StackTrace : MonoBehaviour {
 
 #region Public Methods
     public void Open(ConsoleLog consoleLog) {
-        _stackTraceText.text = consoleLog.LogString + "\n\n" + consoleLog.StackTrace;
+        _stackTraceText.text = consoleLog.logString + "\n\n" + consoleLog.stackTrace;
         SetEnabled(true);
         _scrollRect.normalizedPosition = new Vector2(0, 1);
     }

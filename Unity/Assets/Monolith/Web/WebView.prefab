@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6836365880319159079}
   - component: {fileID: 2569052360016263286}
   m_Layer: 0
-  m_Name: Console
+  m_Name: WebView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

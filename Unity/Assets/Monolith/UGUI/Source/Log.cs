@@ -19,13 +19,13 @@ public class Log : MonoBehaviour {
 
     private const float HEIGHT_INCREMENT = 20.0f;
 
-    private Console _console;
+    private UguiView _uguiView;
     private ColorSet _colorSet;
 #endregion Fields
 
 #region Public Methods
-    public void Init(Console console, ColorSet colorSet) {
-        _console = console;
+    public void Init(UguiView uguiView, ColorSet colorSet) {
+        _uguiView = uguiView;
         _colorSet = colorSet;
 
         _stackTraceImage.color = _colorSet.IconColor;
@@ -35,16 +35,16 @@ public class Log : MonoBehaviour {
     public void SetLog(ref ConsoleLog log) {
         ConsoleLog = log;
 
-        if (log.CustomColor) {
-            SetColors(log.TextColor, log.BgColor);
+        if (log.customColor) {
+            SetColors(log.textColor, log.bgColor);
         }
         else {
-            SetColors(log.LogType);
+            SetColors(log.logType);
         }
 
-        _text.text = log.LogString;
+        _text.text = log.logString;
 
-        if (string.IsNullOrEmpty(ConsoleLog.StackTrace) == false) {
+        if (string.IsNullOrEmpty(ConsoleLog.stackTrace) == false) {
             _stackTraceGameObject.SetActive(true);
         }
     }
@@ -52,11 +52,11 @@ public class Log : MonoBehaviour {
 
 #region Private Methods
     private void OnButtonClicked() {
-        if (string.IsNullOrEmpty(ConsoleLog.StackTrace)) {
+        if (string.IsNullOrEmpty(ConsoleLog.stackTrace)) {
             return;
         }
 
-        _console.OpenStackTraceForLog(ConsoleLog);
+        _uguiView.OpenStackTraceForLog(ConsoleLog);
     }
 
     private void OnRectTransformDimensionsChange() {

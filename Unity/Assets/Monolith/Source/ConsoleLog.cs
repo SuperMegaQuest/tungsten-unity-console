@@ -1,28 +1,35 @@
+using System;
+
 using UnityEngine;
 
 namespace Monolith {
-public class ConsoleLog {
 
-#region Constructor
-    public ConsoleLog(string logString, string stackTrace, LogType logType, bool customColor, Color textColor,
-                      Color bgColor) {
-        LogString = logString;
-        StackTrace = stackTrace;
-        LogType = logType;
-        CustomColor = customColor;
-        TextColor = textColor;
-        BgColor = bgColor;
+[Serializable]
+public struct ConsoleLog {
+
+#region Public
+    public readonly string logString;
+    public readonly string stackTrace;
+    public readonly LogType logType;
+    public readonly bool customColor;
+    public readonly Color textColor;
+    public readonly Color bgColor;
+
+    public ConsoleLog(
+    string logString,
+    string stackTrace,
+    LogType logType,
+    bool customColor,
+    Color textColor,
+    Color bgColor) {
+        this.logString = logString;
+        this.stackTrace = stackTrace;
+        this.logType = logType;
+        this.customColor = customColor;
+        this.textColor = textColor;
+        this.bgColor = bgColor;
     }
-#endregion Constructor
-
-#region Properties
-    public string LogString { get; }
-    public string StackTrace { get; }
-    public LogType LogType { get; }
-    public bool CustomColor { get; }
-    public Color TextColor { get; }
-    public Color BgColor { get; }
-#endregion Properties
+#endregion Public
 
 }
 }

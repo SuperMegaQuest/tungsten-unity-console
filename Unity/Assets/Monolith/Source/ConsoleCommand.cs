@@ -1,24 +1,21 @@
 ﻿namespace Monolith {
 
 /// <summary>
-///     Contains information about each command.
+/// Contains information about each command.
 /// </summary>
-///  TODO: Should could probably be a struct.
-public class ConsoleCommand {
+public struct ConsoleCommand {
 
-#region Constructor
+#region Public
+    public readonly string commandName;
+    public readonly CommandHandler handler;
+    public readonly string helpText;
+
     public ConsoleCommand(string commandName, CommandHandler handler, string helpText) {
-        CommandName = commandName;
-        Handler = handler;
-        HelpText = helpText;
+        this.commandName = commandName;
+        this.handler = handler;
+        this.helpText = helpText;
     }
-#endregion Constructor
-
-#region Properties
-    public string CommandName { get; }
-    public CommandHandler Handler { get; }
-    public string HelpText { get; }
-#endregion Properties
+#endregion Public
 
 }
 }

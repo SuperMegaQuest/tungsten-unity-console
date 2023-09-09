@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Monolith.UGUI {
-public class Console : ConsoleView {
+public class UguiView : ConsoleView {
 
 #region Properties
     public override bool IsActive { get; protected set; }
@@ -287,7 +287,7 @@ public class Console : ConsoleView {
 
     private void FilterUpdated() {
         for (int i = 0, n = _logViewHistory.Count; i < n; i++) {
-            switch (_logViewHistory[i].ConsoleLog.LogType) {
+            switch (_logViewHistory[i].ConsoleLog.logType) {
                 case LogType.Error: {
                     _logViewHistory[i].gameObject.SetActive(!_filterDropdown.GetFilterSetting(LogType.Error));
                     break;
@@ -340,7 +340,7 @@ public class Console : ConsoleView {
 
         for (var i = 0; i < _logViewHistory.Count; i++) {
             var searchStringLower = searchString.ToLowerInvariant();
-            var logStringLower = _logViewHistory[i].ConsoleLog.LogString.ToLowerInvariant();
+            var logStringLower = _logViewHistory[i].ConsoleLog.logString.ToLowerInvariant();
 
             _logViewHistory[i].gameObject.SetActive(logStringLower.Contains(searchStringLower));
         }
@@ -389,7 +389,7 @@ public class Console : ConsoleView {
         }
 
         var commands = Monolith.Console.GetOrderedCommands().Where(command =>
-                                                                       command.CommandName.StartsWith(
+                                                                       command.commandName.StartsWith(
                                                                            input, StringComparison.CurrentCultureIgnoreCase))
                                .ToList();
 
@@ -399,7 +399,7 @@ public class Console : ConsoleView {
             }
 
             case 1: {
-                _commandInputField.text = commands[0].CommandName;
+                _commandInputField.text = commands[0].commandName;
                 _commandInputField.MoveTextEnd(false);
 
                 return;
@@ -416,7 +416,7 @@ public class Console : ConsoleView {
         var stringBuilder = new StringBuilder();
 
         foreach (var command in commands) {
-            stringBuilder.Append($"{command.CommandName}\t\t");
+            stringBuilder.Append($"{command.commandName}\t\t");
         }
 
         Monolith.Console.Log(stringBuilder.ToString(), LogType.Log, false);

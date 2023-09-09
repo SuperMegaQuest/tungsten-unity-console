@@ -10,7 +10,7 @@ public class ConsoleHistory : ScriptableObject {
 #region Properties
     public List<ConsoleLog> LogHistory { get; } = new();
 
-    public ConsoleLog LatestLog => LogHistory[LogHistory.Count - 1];
+    public ConsoleLog LatestLog => LogHistory[^1];
 
     public int CommandHistoryCount => _commandHistory.Count;
 #endregion Properties
