@@ -1,11 +1,16 @@
 <script setup lang="ts">
     import {ref} from 'vue'
 
-    const logsUrl: string = "http://localhost:8080/api/logs";
+    // routes
+    const baseUrl: string = "http://localhost:8080";
+    const logUrl: string = "/log";
+    const commandUrl: string = "/command";
 
     const input = ref<string>("");
-    const intervalId = ref<number>(-1);
 
+    // logs
+    const intervalTimeout: number = 100;
+    const intervalId = ref<number>(-1);
     const logs = ref<Log[]>([]);
 
     interface NewLogsResponse {
@@ -23,30 +28,55 @@
 
     onMounted(() => {
         // start fetching logs
-        intervalId.value = setInterval(() => { fetchNewLogs(); }, 1000) as unknown as number;
+        intervalId.value = setInterval(() => { fetchNewLogs(); }, intervalTimeout) as unknown as number;
     });
 
     async function fetchNewLogs() {
-        fetchData<NewLogsResponse>(logsUrl).then((data) => {
-            // add new logs to the list
-            logs.value.push(...data.logs);
+        // fetchData<NewLogsResponse>(`${baseUrl}${logUrl}`).then((data) => {
+        //     // add new logs to the list
+        //     logs.value.push(...data.logs);
+        // }).catch((error) => {
+        //     console.log(error);
+        // });
+
+        await fetch(`${baseUrl}${logUrl}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        }).then((data: Response) => {
+            if (!data.ok) {
+                console.error(`Failed to fetch new logs ${data.status}`);
+                return;
+            }
+
+            data.json().then((newLogs: NewLogsResponse) => {
+                logs.value.push(...newLogs.logs);
+            }).catch((error) => {
+                // todo display a toast notification with the error
+                console.error(`Failed to parse response: ${error}`);
+            });
         }).catch((error) => {
-            console.log(error);
+            // todo display a toast notification with the error
+            console.error(`Failed to fetch new logs: ${error}`);
         });
     }
 
-    async function fetchData<T>(url: string): Promise<T> {
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        return await response.json() as T;
-    }
+    // async function fetchData<T>(url: string): Promise<T> {
+    //     const response: Response = await fetch(url);
+    //
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! Status: ${response.status}`);
+    //     }
+    //
+    //     return await response.json() as T;
+    // }
 
     function submitCommand() {
-        console.log(input.value);
+        fetch(`${baseUrl}${commandUrl}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ command: input.value })
+        });
+
         input.value = "";
     }
 </script>
@@ -62,10 +92,22 @@
 
         <div class="input">
             <div class="command">
-                <UInput icon="i-heroicons-code-bracket-20-solid" size="sm" color="white" :trailing="false" @keyup.enter="submitCommand" v-model="input"/>
+                <UInput
+                    icon="i-heroicons-code-bracket-20-solid"
+                    size="sm"
+                    color="white"
+                    :trailing="false"
+                    @keyup.enter="submitCommand"
+                    v-model="input"
+                />
             </div>
             <div class="search">
-                <UInput icon="i-heroicons-magnifying-glass-20-solid" size="sm" color="white" :trailing="false"/>
+                <UInput
+                    icon="i-heroicons-magnifying-glass-20-solid"
+                    size="sm"
+                    color="white"
+                    :trailing="false"
+                />
             </div>
         </div>
     </div>
